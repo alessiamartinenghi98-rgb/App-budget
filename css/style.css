@@ -112,19 +112,19 @@ h1, h2 {
   font-weight: 600;
 }
 
-/* Summary card (saldo iniziale / attuale / risparmiato) */
+/* Summary card (saldo attuale / spese / risparmio) */
 
 .summary-card {
   background: var(--pink);
   border-color: transparent;
-  padding: 12px 6px;
+  padding: 8px 4px;
 }
 
 .summary-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr auto 1fr;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .summary-divider {
@@ -138,19 +138,13 @@ h1, h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   min-width: 0;
   padding: 0 2px;
 }
 
-.summary-stat-top {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
 .summary-label {
-  font-size: 0.64rem;
+  font-size: 0.58rem;
   font-weight: 700;
   color: var(--text);
   opacity: 0.72;
@@ -160,7 +154,7 @@ h1, h2 {
 .summary-value {
   font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
-  font-size: 0.94rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: var(--accent-dark);
   line-height: 1.2;
@@ -169,8 +163,44 @@ h1, h2 {
 
 .summary-value.muted {
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 700;
+}
+
+/* Saldo iniziale card (Budget tab) */
+
+.balance-card-budget {
+  background: var(--pink);
+  border-color: transparent;
+}
+
+.balance-row-budget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.balance-label-budget {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text);
+  opacity: 0.72;
+  margin-bottom: 4px;
+}
+
+.balance-value-budget {
+  font-family: "Fredoka", sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+}
+
+.balance-value-budget.muted {
+  color: var(--muted);
+  font-size: 1rem;
 }
 
 .edit-balance-btn {
@@ -178,10 +208,10 @@ h1, h2 {
   color: var(--accent-dark);
   border: none;
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
-  font-size: 0.6rem;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  font-size: 0.75rem;
   line-height: 1;
   cursor: pointer;
   display: flex;
@@ -189,18 +219,48 @@ h1, h2 {
   justify-content: center;
 }
 
-.summary-caption {
-  margin: 10px 2px 0;
-  font-size: 0.64rem;
+/* Weekly breakdown (Budget tab) */
+
+.week-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.week-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--surface-soft);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+}
+
+.week-row-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.week-row-dates {
+  display: block;
   font-weight: 600;
-  color: var(--text);
-  opacity: 0.55;
-  text-align: center;
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.week-row-value {
+  font-family: "Fredoka", sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--accent-dark);
+  white-space: nowrap;
 }
 
 .balance-form {
-  margin: 12px 6px 2px;
-  padding-top: 12px;
+  margin: 14px 0 0;
+  padding-top: 14px;
   border-top: 1px dashed rgba(91, 75, 102, 0.2);
 }
 

@@ -25,33 +25,20 @@
     <div class="card summary-card">
       <div class="summary-grid">
         <div class="summary-stat">
-          <div class="summary-stat-top">
-            <span class="summary-label">💰 Iniziale</span>
-            <button id="edit-balance-btn" class="edit-balance-btn" type="button" aria-label="Modifica saldo iniziale">✎</button>
-          </div>
-          <div id="initial-balance-display" class="summary-value"></div>
-        </div>
-        <div class="summary-divider"></div>
-        <div class="summary-stat">
           <span class="summary-label">👛 Attuale</span>
           <div id="stat-current-balance" class="summary-value">—</div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-stat">
-          <span class="summary-label">🐷 Risparmiato</span>
+          <span class="summary-label">🧾 Spese</span>
+          <div id="stat-spent-total" class="summary-value">—</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-stat">
+          <span class="summary-label">🐷 Risparmio</span>
           <div id="stat-saved" class="summary-value">—</div>
         </div>
       </div>
-
-      <form id="balance-form" class="balance-form hidden">
-        <label for="initial-balance-input">Saldo iniziale di questo ciclo (dal 27)</label>
-        <div class="balance-input-row">
-          <input type="number" id="initial-balance-input" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
-          <button type="submit" class="btn-primary btn-small">Salva</button>
-        </div>
-      </form>
-
-      <p class="summary-caption">🐷 = iniziale − spese − budget non ancora usato</p>
     </div>
 
     <div class="card home-weekly-card">
@@ -124,8 +111,34 @@
 
   <!-- BUDGET -->
   <section id="view-budget" class="view hidden">
+
+    <div class="card balance-card-budget">
+      <div class="balance-row-budget">
+        <div>
+          <span class="balance-label-budget">💰 Saldo iniziale (dal 27)</span>
+          <div id="initial-balance-display" class="balance-value-budget"></div>
+        </div>
+        <button id="edit-balance-btn" class="edit-balance-btn" type="button" aria-label="Modifica saldo iniziale">✎</button>
+      </div>
+
+      <form id="balance-form" class="balance-form hidden">
+        <label for="initial-balance-input">Saldo iniziale di questo ciclo (dal 27)</label>
+        <div class="balance-input-row">
+          <input type="number" id="initial-balance-input" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
+          <button type="submit" class="btn-primary btn-small">Salva</button>
+        </div>
+      </form>
+    </div>
+
     <p class="budget-intro">Ecco come sta andando ogni categoria in questo ciclo 🌷</p>
     <div id="budget-list" class="budget-list"></div>
+
+    <div class="card">
+      <h2>📅 Spese per settimana</h2>
+      <p class="home-weekly-sub">Totale di tutte le categorie, esclusa l'Affitto</p>
+      <div id="weekly-breakdown-list" class="week-list"></div>
+    </div>
+
   </section>
 
 </main>

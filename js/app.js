@@ -222,7 +222,10 @@
     var initial = balances[currentCycleKey];
     var spentTotal = totalSpent(expensesInCycle(currentCycleKey));
     var currentEl = document.getElementById("stat-current-balance");
+    var spentEl = document.getElementById("stat-spent-total");
     var savedEl = document.getElementById("stat-saved");
+
+    spentEl.textContent = currencyFormatter.format(spentTotal);
 
     if (initial === undefined || initial === null) {
       currentEl.textContent = "—";
@@ -383,6 +386,29 @@
     );
   }
 
+  function spentInRangeExcluding(excludeCatKey, start, end) {
+    return totalSpent(
+      expenses.filter(function (exp) {
+        if (exp.category === excludeCatKey) return false;
+        var d = parseISODate(exp.date);
+        return d >= start && d <= end;
+      })
+    );
+  }
+
+  function weeksInCycle(cycleKey) {
+    var b = cycleBounds(cycleKey);
+    var weeks = [];
+    var cursor = b.start;
+    while (cursor <= b.end) {
+      var weekEnd = addDays(cursor, 6);
+      if (weekEnd > b.end) weekEnd = b.end;
+      weeks.push({ start: cursor, end: weekEnd });
+      cursor = addDays(weekEnd, 1);
+    }
+    return weeks;
+  }
+
   function weeklyStatus(cat) {
     var w = weekInfoForToday(currentCycleKey);
     var weekSpent = spentInRange(currentCycleKey, cat.key, w.weekStart, w.weekEnd);
@@ -517,6 +543,28 @@
     });
   }
 
+  // ---------- Rendering: weekly breakdown (Budget view) ----------
+
+  function renderWeeklyBreakdown() {
+    var container = document.getElementById("weekly-breakdown-list");
+    container.innerHTML = "";
+
+    weeksInCycle(currentCycleKey).forEach(function (w, idx) {
+      var spent = spentInRangeExcluding("affitto", w.start, w.end);
+      var startLabel = w.start.toLocaleDateString("it-IT", { day: "numeric", month: "short" });
+      var endLabel = w.end.toLocaleDateString("it-IT", { day: "numeric", month: "short" });
+
+      var row = document.createElement("div");
+      row.className = "week-row";
+      row.innerHTML =
+        '<span class="week-row-label">Settimana ' + (idx + 1) +
+          '<span class="week-row-dates">' + startLabel + " – " + endLabel + "</span>" +
+        "</span>" +
+        '<span class="week-row-value">' + currencyFormatter.format(spent) + "</span>";
+      container.appendChild(row);
+    });
+  }
+
   // ---------- Render all ----------
 
   function renderAll(newId) {
@@ -526,6 +574,7 @@
     renderHomeWeekly();
     renderList(newId);
     renderBudget();
+    renderWeeklyBreakdown();
   }
 
   // ---------- Toast ----------
