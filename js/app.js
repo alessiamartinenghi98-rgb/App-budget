@@ -38,6 +38,7 @@
     { key: "spesa", label: "Spesa", icon: "🛒", color: "peach", budget: 130, weekly: true },
     { key: "dentista", label: "Dentista", icon: "🦷", color: "pink", budget: 86 },
     { key: "benzina", label: "Benzina", icon: "⛽", color: "lilac", budget: 250, weekly: true },
+    { key: "casa", label: "Casa", icon: "🧹", color: "peach", budget: 30 },
     { key: "altro", label: "Altro", icon: "📦", color: "sky", budget: null }
   ];
 
