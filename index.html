@@ -3,20 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#5b6bf5">
-<title>Le Mie Spese</title>
+<meta name="theme-color" content="#F2739E">
+<title>Le Mie Spese 💕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header class="app-header">
+  <p class="eyebrow">✨ ciao!</p>
   <h1>Le Mie Spese</h1>
+  <p id="cycle-label" class="cycle-label"></p>
 </header>
 
 <main class="app-main">
 
-  <!-- VISTA: AGGIUNGI + ELENCO -->
-  <section id="view-spese" class="view">
+  <!-- HOME -->
+  <section id="view-home" class="view">
+
+    <div class="card balance-card">
+      <div class="balance-row">
+        <div class="balance-item">
+          <span class="balance-label">💰 Saldo iniziale</span>
+          <div id="initial-balance-display" class="balance-value"></div>
+        </div>
+        <button id="edit-balance-btn" class="btn-chip" type="button">Modifica</button>
+      </div>
+
+      <form id="balance-form" class="balance-form hidden">
+        <label for="initial-balance-input">Saldo iniziale di questo ciclo (dal 27)</label>
+        <div class="balance-input-row">
+          <input type="number" id="initial-balance-input" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
+          <button type="submit" class="btn-primary btn-small">Salva</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="stats-grid">
+      <div class="card stat-card stat-current">
+        <span class="stat-icon">👛</span>
+        <span class="stat-label">Saldo attuale stimato</span>
+        <span id="stat-current-balance" class="stat-value">—</span>
+      </div>
+      <div class="card stat-card stat-saved">
+        <span class="stat-icon">🐷</span>
+        <span class="stat-label">Risparmiato finora</span>
+        <span id="stat-saved" class="stat-value">—</span>
+        <span class="stat-caption">saldo iniziale − spese − budget non ancora usato</span>
+      </div>
+    </div>
+
+    <div class="card goal-card">
+      <div class="goal-header">
+        <h2>🌴 Obiettivo del mese</h2>
+        <span class="goal-target">600 €</span>
+      </div>
+      <p class="goal-sub">500 € viaggio + 100 € da accantonare</p>
+      <div class="goal-bar-track">
+        <div id="goal-bar-fill" class="goal-bar-fill"></div>
+      </div>
+      <div class="goal-footer">
+        <span id="goal-amount-left" class="goal-amount"></span>
+        <span id="goal-percent" class="goal-percent"></span>
+      </div>
+      <p id="goal-message" class="goal-message"></p>
+    </div>
+
+  </section>
+
+  <!-- SPESE -->
+  <section id="view-spese" class="view hidden">
 
     <form id="expense-form" class="card expense-form">
       <div class="field">
@@ -26,13 +83,12 @@
 
       <div class="field">
         <label for="category">Categoria</label>
-        <select id="category" required>
-          <option value="cibo">🍔 Cibo</option>
-          <option value="trasporti">🚌 Trasporti</option>
-          <option value="casa">🏠 Casa</option>
-          <option value="svago">🎉 Svago</option>
-          <option value="altro">📦 Altro</option>
-        </select>
+        <select id="category" required></select>
+      </div>
+
+      <div class="field hidden" id="subcategory-field">
+        <label for="subcategory">Sotto-voce</label>
+        <select id="subcategory"></select>
       </div>
 
       <div class="field">
@@ -42,11 +98,13 @@
 
       <div class="field">
         <label for="note">Nota (facoltativa)</label>
-        <input type="text" id="note" placeholder="Es. spesa al supermercato" maxlength="80">
+        <input type="text" id="note" placeholder="Es. aperitivo con Giulia" maxlength="80">
       </div>
 
-      <button type="submit" class="btn-primary">Aggiungi spesa</button>
+      <button type="submit" class="btn-primary">Aggiungi spesa 🌸</button>
     </form>
+
+    <div id="toast" class="toast hidden"></div>
 
     <div class="list-header">
       <h2>Elenco spese</h2>
@@ -54,41 +112,30 @@
     </div>
 
     <ul id="expense-list" class="expense-list"></ul>
-    <p id="empty-state" class="empty-state">Nessuna spesa registrata. Aggiungine una qui sopra 👆</p>
+    <p id="empty-state" class="empty-state">Nessuna spesa in questo ciclo. Aggiungine una qui sopra 👆</p>
 
   </section>
 
-  <!-- VISTA: RIEPILOGO -->
-  <section id="view-riepilogo" class="view hidden">
-
-    <div class="card">
-      <h2>Totale per categoria</h2>
-      <div class="field month-filter">
-        <label for="category-month-filter">Mese</label>
-        <select id="category-month-filter"></select>
-      </div>
-      <ul id="category-totals" class="totals-list"></ul>
-      <p id="category-empty" class="empty-state">Nessun dato per il periodo selezionato.</p>
-    </div>
-
-    <div class="card">
-      <h2>Totale per mese</h2>
-      <ul id="month-totals" class="totals-list"></ul>
-      <p id="month-empty" class="empty-state">Nessun dato disponibile.</p>
-    </div>
-
+  <!-- BUDGET -->
+  <section id="view-budget" class="view hidden">
+    <p class="budget-intro">Ecco come sta andando ogni categoria in questo ciclo 🌷</p>
+    <div id="budget-list" class="budget-list"></div>
   </section>
 
 </main>
 
 <nav class="bottom-nav">
-  <button class="nav-btn active" data-view="view-spese">
+  <button class="nav-btn active" data-view="view-home">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </button>
+  <button class="nav-btn" data-view="view-spese">
     <span class="nav-icon">🧾</span>
     <span>Spese</span>
   </button>
-  <button class="nav-btn" data-view="view-riepilogo">
-    <span class="nav-icon">📊</span>
-    <span>Riepilogo</span>
+  <button class="nav-btn" data-view="view-budget">
+    <span class="nav-icon">🌈</span>
+    <span>Budget</span>
   </button>
 </nav>
 
