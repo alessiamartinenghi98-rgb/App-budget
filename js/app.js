@@ -628,6 +628,11 @@
           "</div>";
       }
 
+      var remaining = "";
+      if (spent < cat.budget) {
+        remaining = '<p class="budget-remaining">💶 Mancano ' + currencyFormatter.format(cat.budget - spent) + " al budget</p>";
+      }
+
       var warning = "";
       if (spent > cat.budget) {
         warning = '<div class="budget-warning over">🚨 Hai sforato di ' + currencyFormatter.format(spent - cat.budget) + "!</div>";
@@ -664,6 +669,7 @@
           "</div>" +
         "</div>" +
         '<div class="budget-bar-track"><div class="budget-bar-fill" style="width:' + barPct + "%;background:var(--" + cat.color + "-strong)\"></div></div>" +
+        remaining +
         warning +
         subchips +
         weekBlock;
