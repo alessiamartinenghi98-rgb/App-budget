@@ -5,6 +5,7 @@
   var BALANCES_KEY = "budgetapp:initial-balances";
   var CYCLE_START_DAY = 27;
   var SAVINGS_GOAL = 600;
+  var WEEKS_PER_CYCLE = 4;
 
   var CATEGORIES = [
     {
@@ -34,9 +35,9 @@
     },
     { key: "affitto", label: "Affitto", icon: "🏡", color: "sky", budget: 390 },
     { key: "bollette", label: "Bollette", icon: "💡", color: "yellow", budget: 40 },
-    { key: "spesa", label: "Spesa", icon: "🛒", color: "peach", budget: 130 },
+    { key: "spesa", label: "Spesa", icon: "🛒", color: "peach", budget: 130, weekly: true },
     { key: "dentista", label: "Dentista", icon: "🦷", color: "pink", budget: 86 },
-    { key: "benzina", label: "Benzina", icon: "⛽", color: "lilac", budget: 250 }
+    { key: "benzina", label: "Benzina", icon: "⛽", color: "lilac", budget: 250, weekly: true }
   ];
 
   var currencyFormatter = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" });
@@ -365,8 +366,7 @@
     var weekStart = addDays(b.start, weekIndex * 7);
     var weekEndMax = addDays(weekStart, 6);
     var weekEnd = weekEndMax > b.end ? b.end : weekEndMax;
-    var totalWeeks = Math.ceil(b.totalDays / 7);
-    return { weekStart: weekStart, weekEnd: weekEnd, totalWeeks: totalWeeks };
+    return { weekStart: weekStart, weekEnd: weekEnd };
   }
 
   function spentInRange(cycleKey, catKey, start, end) {
@@ -377,6 +377,19 @@
         return d >= start && d <= end;
       })
     );
+  }
+
+  function weeklyStatus(cat) {
+    var w = weekInfoForToday(currentCycleKey);
+    var weekSpent = spentInRange(currentCycleKey, cat.key, w.weekStart, w.weekEnd);
+    var weeklyTarget = cat.budget / WEEKS_PER_CYCLE;
+    return {
+      weekSpent: weekSpent,
+      weeklyTarget: weeklyTarget,
+      onTrack: weekSpent <= weeklyTarget,
+      weekStart: w.weekStart,
+      weekEnd: w.weekEnd
+    };
   }
 
   function renderBudget() {
@@ -412,20 +425,17 @@
 
       var weekBlock = "";
       if (cat.weekly) {
-        var w = weekInfoForToday(currentCycleKey);
-        var weekSpent = spentInRange(currentCycleKey, cat.key, w.weekStart, w.weekEnd);
-        var weeklyTarget = cat.budget / w.totalWeeks;
-        var onTrack = weekSpent <= weeklyTarget;
-        var weekStartLabel = w.weekStart.toLocaleDateString("it-IT", { day: "numeric", month: "short" });
-        var weekEndLabel = w.weekEnd.toLocaleDateString("it-IT", { day: "numeric", month: "short" });
+        var ws = weeklyStatus(cat);
+        var weekStartLabel = ws.weekStart.toLocaleDateString("it-IT", { day: "numeric", month: "short" });
+        var weekEndLabel = ws.weekEnd.toLocaleDateString("it-IT", { day: "numeric", month: "short" });
 
         weekBlock =
           '<div class="budget-week">' +
             '<p class="budget-week-title">📅 Questa settimana (' + weekStartLabel + " – " + weekEndLabel + ")</p>" +
             '<div class="budget-week-row">' +
-              '<span class="budget-week-amounts">' + currencyFormatter.format(weekSpent) + " di " + currencyFormatter.format(weeklyTarget) + "</span>" +
-              '<span class="pace-pill ' + (onTrack ? "ontrack" : "behind") + '">' +
-                (onTrack ? "🎉 Sei in linea!" : "⚠️ Sopra il ritmo") +
+              '<span class="budget-week-amounts">' + currencyFormatter.format(ws.weekSpent) + " di " + currencyFormatter.format(ws.weeklyTarget) + "</span>" +
+              '<span class="pace-pill ' + (ws.onTrack ? "ontrack" : "behind") + '">' +
+                (ws.onTrack ? "🎉 Sei in linea!" : "⚠️ Sopra il ritmo") +
               "</span>" +
             "</div>" +
           "</div>";
@@ -448,12 +458,54 @@
     });
   }
 
+  // ---------- Rendering: home weekly rhythm ----------
+
+  function renderHomeWeekly() {
+    var container = document.getElementById("home-weekly-list");
+    container.innerHTML = "";
+
+    CATEGORIES.filter(function (cat) {
+      return cat.weekly;
+    }).forEach(function (cat) {
+      var spent = spentByCategory(currentCycleKey, cat.key);
+      var pct = Math.round((spent / cat.budget) * 100);
+      var monthlyBarPct = Math.min(pct, 100);
+
+      var ws = weeklyStatus(cat);
+      var weeklyPct = Math.min(Math.round((ws.weekSpent / ws.weeklyTarget) * 100), 100);
+
+      var card = document.createElement("div");
+      card.className = "mini-budget";
+      card.innerHTML =
+        '<div class="mini-budget-top">' +
+          '<span class="mini-budget-icon">' + cat.icon + "</span>" +
+          '<span class="mini-budget-label">' + cat.label + "</span>" +
+          '<span class="mini-budget-pct">' + pct + "%</span>" +
+        "</div>" +
+        '<div class="mini-row">' +
+          '<span class="mini-row-label">Mese</span>' +
+          '<div class="mini-track"><div class="mini-fill" style="width:' + monthlyBarPct + "%;background:var(--" + cat.color + "-strong)\"></div></div>" +
+          '<span class="mini-row-value">' + currencyFormatter.format(spent) + " / " + currencyFormatter.format(cat.budget) + "</span>" +
+        "</div>" +
+        '<div class="mini-row">' +
+          '<span class="mini-row-label">Sett.</span>' +
+          '<div class="mini-track"><div class="mini-fill" style="width:' + weeklyPct + "%;background:var(--" + cat.color + "-strong)\"></div></div>" +
+          '<span class="mini-row-value">' + currencyFormatter.format(ws.weekSpent) + " / " + currencyFormatter.format(ws.weeklyTarget) + "</span>" +
+        "</div>" +
+        '<span class="pace-pill mini-pace ' + (ws.onTrack ? "ontrack" : "behind") + '">' +
+          (ws.onTrack ? "🎉 In linea" : "⚠️ Sopra il ritmo") +
+        "</span>";
+      container.appendChild(card);
+    });
+  }
+
   // ---------- Render all ----------
 
   function renderAll(newId) {
     renderCycleLabel();
     renderBalance();
     renderStats();
+    renderHomeWeekly();
     renderList(newId);
     renderBudget();
   }
