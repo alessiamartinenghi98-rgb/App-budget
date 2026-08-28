@@ -3,6 +3,8 @@
 
   var EXPENSES_KEY = "budgetapp:expenses";
   var BALANCES_KEY = "budgetapp:initial-balances";
+  var SALARIES_KEY = "budgetapp:planned-salary";
+  var PLANNED_EXPENSES_KEY = "budgetapp:planned-expenses";
   var CYCLE_START_DAY = 27;
   var SAVINGS_GOAL = 600;
   var WEEKS_PER_CYCLE = 4;
@@ -72,8 +74,36 @@
     localStorage.setItem(BALANCES_KEY, JSON.stringify(map));
   }
 
+  function loadSalaries() {
+    try {
+      var raw = localStorage.getItem(SALARIES_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveSalaries(map) {
+    localStorage.setItem(SALARIES_KEY, JSON.stringify(map));
+  }
+
+  function loadPlannedExpenses() {
+    try {
+      var raw = localStorage.getItem(PLANNED_EXPENSES_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function savePlannedExpenses(list) {
+    localStorage.setItem(PLANNED_EXPENSES_KEY, JSON.stringify(list));
+  }
+
   var expenses = loadExpenses();
   var balances = loadBalances();
+  var salaries = loadSalaries();
+  var plannedExpenses = loadPlannedExpenses();
 
   // ---------- Date / cycle helpers ----------
 
@@ -199,6 +229,27 @@
     }, 0);
   }
 
+  function plannedExpensesInCycle(cycleKey) {
+    return plannedExpenses.filter(function (p) {
+      return p.cycleKey === cycleKey;
+    });
+  }
+
+  function totalPlannedExtra(cycleKey) {
+    return totalSpent(plannedExpensesInCycle(cycleKey));
+  }
+
+  function projectedCategorySpend(cycleKey, cat) {
+    var spent = spentByCategory(cycleKey, cat.key);
+    return cat.budget ? Math.max(cat.budget, spent) : spent;
+  }
+
+  function totalProjectedSpend(cycleKey) {
+    return CATEGORIES.reduce(function (sum, cat) {
+      return sum + projectedCategorySpend(cycleKey, cat);
+    }, 0);
+  }
+
   // ---------- Rendering: home ----------
 
   function renderCycleLabel() {
@@ -270,6 +321,120 @@
       amountEl.textContent = "Mancano " + currencyFormatter.format(missing);
       messageEl.textContent = "✨ Continua così, ci sei quasi!";
     }
+  }
+
+  // ---------- Rendering: forecast ----------
+
+  function renderSalary() {
+    var display = document.getElementById("salary-display");
+    var value = salaries[currentCycleKey];
+    if (value === undefined || value === null) {
+      display.textContent = "imposta 👆";
+      display.classList.add("muted");
+    } else {
+      display.textContent = currencyFormatter.format(value);
+      display.classList.remove("muted");
+    }
+    document.getElementById("salary-input").value = value !== undefined && value !== null ? value : "";
+  }
+
+  function renderForecast() {
+    var salary = salaries[currentCycleKey];
+    var amountEl = document.getElementById("forecast-amount");
+    var deltaEl = document.getElementById("forecast-goal-delta");
+    var messageEl = document.getElementById("forecast-message");
+
+    if (salary === undefined || salary === null) {
+      amountEl.textContent = "—";
+      amountEl.className = "forecast-amount";
+      deltaEl.textContent = "";
+      messageEl.textContent = "Imposta lo stipendio previsto per vedere il forecast 💫";
+      return;
+    }
+
+    var projectedSpend = totalProjectedSpend(currentCycleKey);
+    var plannedExtra = totalPlannedExtra(currentCycleKey);
+    var forecast = salary - projectedSpend - plannedExtra;
+    var delta = forecast - SAVINGS_GOAL;
+
+    amountEl.textContent = currencyFormatter.format(forecast);
+    amountEl.className = "forecast-amount " + (forecast >= 0 ? "positive" : "negative");
+
+    if (delta >= 0) {
+      deltaEl.textContent = "🎉 +" + currencyFormatter.format(delta) + " sopra l'obiettivo di 600 €";
+    } else {
+      deltaEl.textContent = "⚠️ " + currencyFormatter.format(delta) + " sotto l'obiettivo di 600 €";
+    }
+
+    messageEl.textContent = "Stipendio − budget delle categorie − spese previste, aggiornato in automatico";
+  }
+
+  function renderPlannedExpenses() {
+    var listEl = document.getElementById("planned-expense-list");
+    var emptyEl = document.getElementById("planned-expense-empty");
+    var totalEl = document.getElementById("planned-expense-total-value");
+
+    var items = plannedExpensesInCycle(currentCycleKey);
+    listEl.innerHTML = "";
+
+    if (items.length === 0) {
+      emptyEl.classList.add("visible");
+    } else {
+      emptyEl.classList.remove("visible");
+      items.forEach(function (item) {
+        var li = document.createElement("li");
+        li.className = "planned-expense-item";
+        li.innerHTML =
+          '<span class="planned-expense-name">' + escapeHtml(item.label) + "</span>" +
+          '<span class="planned-expense-amount">' + currencyFormatter.format(item.amount) + "</span>" +
+          '<button class="planned-expense-delete" data-id="' + item.id + '" aria-label="Rimuovi spesa prevista">✕</button>';
+        listEl.appendChild(li);
+      });
+    }
+
+    totalEl.textContent = currencyFormatter.format(totalPlannedExtra(currentCycleKey));
+  }
+
+  function renderForecastBreakdown() {
+    var overList = document.getElementById("forecast-over-list");
+    var underList = document.getElementById("forecast-under-list");
+    var overEmpty = document.getElementById("forecast-over-empty");
+    var underEmpty = document.getElementById("forecast-under-empty");
+
+    overList.innerHTML = "";
+    underList.innerHTML = "";
+
+    var overCount = 0;
+    var underCount = 0;
+
+    CATEGORIES.filter(function (cat) {
+      return cat.budget;
+    }).forEach(function (cat) {
+      var spent = spentByCategory(currentCycleKey, cat.key);
+      var diff = spent - cat.budget;
+      if (diff === 0) return;
+
+      var row = document.createElement("div");
+      row.className = "forecast-row " + (diff > 0 ? "over" : "under");
+      row.innerHTML =
+        '<span class="forecast-row-icon">' + cat.icon + "</span>" +
+        '<div class="forecast-row-info">' +
+          '<div class="forecast-row-label">' + cat.label + "</div>" +
+          '<div class="forecast-row-detail">' + currencyFormatter.format(spent) + " di " + currencyFormatter.format(cat.budget) + "</div>" +
+        "</div>" +
+        '<span class="forecast-row-diff">' + (diff > 0 ? "+" : "−") + currencyFormatter.format(Math.abs(diff)) + "</span>";
+
+      if (diff > 0) {
+        overList.appendChild(row);
+        overCount++;
+      } else {
+        underList.appendChild(row);
+        underCount++;
+      }
+    });
+
+    overEmpty.classList.toggle("visible", overCount === 0);
+    underEmpty.classList.toggle("visible", underCount === 0);
   }
 
   // ---------- Rendering: expense form ----------
@@ -575,6 +740,10 @@
     renderList(newId);
     renderBudget();
     renderWeeklyBreakdown();
+    renderSalary();
+    renderForecast();
+    renderPlannedExpenses();
+    renderForecastBreakdown();
   }
 
   // ---------- Toast ----------
@@ -611,6 +780,63 @@
       saveBalances(balances);
       form.classList.add("hidden");
       showToast("Salvato! 💾");
+      renderAll();
+    });
+  }
+
+  function initSalaryForm() {
+    var editBtn = document.getElementById("edit-salary-btn");
+    var form = document.getElementById("salary-form");
+
+    editBtn.addEventListener("click", function () {
+      form.classList.toggle("hidden");
+      if (!form.classList.contains("hidden")) {
+        document.getElementById("salary-input").focus();
+      }
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var value = parseFloat(document.getElementById("salary-input").value);
+      if (isNaN(value) || value < 0) return;
+      salaries[currentCycleKey] = Math.round(value * 100) / 100;
+      saveSalaries(salaries);
+      form.classList.add("hidden");
+      showToast("Salvato! 💾");
+      renderAll();
+    });
+  }
+
+  function initPlannedExpenseForm() {
+    var form = document.getElementById("planned-expense-form");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var label = document.getElementById("planned-label").value.trim();
+      var amount = parseFloat(document.getElementById("planned-amount").value);
+      if (!label || !amount || amount <= 0) return;
+
+      plannedExpenses.push({
+        id: Date.now() + "-" + Math.random().toString(36).slice(2, 8),
+        cycleKey: currentCycleKey,
+        label: label,
+        amount: Math.round(amount * 100) / 100,
+        createdAt: Date.now()
+      });
+
+      savePlannedExpenses(plannedExpenses);
+      form.reset();
+      renderAll();
+    });
+
+    document.getElementById("planned-expense-list").addEventListener("click", function (e) {
+      var btn = e.target.closest(".planned-expense-delete");
+      if (!btn) return;
+      var id = btn.getAttribute("data-id");
+      plannedExpenses = plannedExpenses.filter(function (p) {
+        return p.id !== id;
+      });
+      savePlannedExpenses(plannedExpenses);
       renderAll();
     });
   }
@@ -687,6 +913,8 @@
   document.addEventListener("DOMContentLoaded", function () {
     populateCategorySelect();
     initBalanceForm();
+    initSalaryForm();
+    initPlannedExpenseForm();
     initExpenseForm();
     initListDelete();
     initNav();

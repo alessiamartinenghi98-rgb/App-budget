@@ -503,6 +503,260 @@ h1, h2 {
   font-weight: 600;
 }
 
+/* Forecast card */
+
+.forecast-card {
+  background: linear-gradient(160deg, var(--lilac), var(--sky));
+}
+
+.forecast-header h2 {
+  margin: 0 0 12px;
+}
+
+.forecast-input-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+}
+
+.forecast-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.forecast-amount {
+  font-family: "Fredoka", sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.forecast-amount.positive {
+  color: #2f7d52;
+}
+
+.forecast-amount.negative {
+  color: var(--accent-dark);
+}
+
+.forecast-goal-delta {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.forecast-message {
+  margin: 10px 2px 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Spese previste */
+
+.planned-expense-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.planned-expense-form input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: "Quicksand", sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.planned-expense-form input[type="number"] {
+  width: 84px;
+  padding: 10px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: "Quicksand", sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.planned-expense-form input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.planned-add-btn {
+  background: var(--accent);
+  color: #fff;
+  width: 40px;
+  height: auto;
+  min-width: 40px;
+  font-size: 1.1rem;
+  border-radius: var(--radius-sm);
+}
+
+.planned-expense-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.planned-expense-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--surface-soft);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.planned-expense-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planned-expense-amount {
+  font-family: "Fredoka", sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.planned-expense-delete {
+  background: var(--over-tint);
+  color: var(--over);
+  border: none;
+  border-radius: 8px;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.planned-expense-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.planned-expense-total span:last-child {
+  font-family: "Fredoka", sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-dark);
+  font-size: 0.95rem;
+}
+
+/* Sopra / sotto budget lists */
+
+.forecast-list-title {
+  margin: 14px 0 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.forecast-list-title.over {
+  color: var(--accent-dark);
+}
+
+.forecast-list-title.under {
+  color: #2f7d52;
+}
+
+.forecast-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.forecast-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  border-left: 4px solid transparent;
+}
+
+.forecast-row.over {
+  background: var(--over-tint);
+  border-left-color: var(--over);
+}
+
+.forecast-row.under {
+  background: var(--good-tint);
+  border-left-color: var(--good);
+}
+
+.forecast-row-icon {
+  font-size: 1rem;
+}
+
+.forecast-row-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.forecast-row-label {
+  font-weight: 700;
+  font-size: 0.84rem;
+}
+
+.forecast-row-detail {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.forecast-row-diff {
+  font-family: "Fredoka", sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.forecast-row.over .forecast-row-diff {
+  color: var(--accent-dark);
+}
+
+.forecast-row.under .forecast-row-diff {
+  color: #2f7d52;
+}
+
 /* Toast */
 
 .toast {

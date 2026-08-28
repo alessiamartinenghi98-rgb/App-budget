@@ -63,6 +63,64 @@
       <p id="goal-message" class="goal-message"></p>
     </div>
 
+    <div class="card forecast-card">
+      <div class="forecast-header">
+        <h2>🔮 Forecast del mese</h2>
+      </div>
+
+      <div class="forecast-input-row">
+        <div>
+          <span class="balance-label-budget">💼 Stipendio previsto</span>
+          <div id="salary-display" class="balance-value-budget"></div>
+        </div>
+        <button id="edit-salary-btn" class="edit-balance-btn" type="button" aria-label="Modifica stipendio previsto">✎</button>
+      </div>
+      <form id="salary-form" class="balance-form hidden">
+        <label for="salary-input">Stipendio previsto per questo ciclo</label>
+        <div class="balance-input-row">
+          <input type="number" id="salary-input" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
+          <button type="submit" class="btn-primary btn-small">Salva</button>
+        </div>
+      </form>
+
+      <div class="forecast-result">
+        <span id="forecast-amount" class="forecast-amount">—</span>
+        <span id="forecast-goal-delta" class="forecast-goal-delta"></span>
+      </div>
+      <p id="forecast-message" class="forecast-message"></p>
+    </div>
+
+    <div class="card">
+      <h2>📝 Spese previste</h2>
+      <p class="home-weekly-sub">Uscite occasionali non ancora fatte, incluse nel forecast</p>
+
+      <form id="planned-expense-form" class="planned-expense-form">
+        <input type="text" id="planned-label" placeholder="Es. regalo compleanno" maxlength="60" required>
+        <input type="number" id="planned-amount" inputmode="decimal" step="0.01" min="0.01" placeholder="€" required>
+        <button type="submit" class="edit-balance-btn planned-add-btn" aria-label="Aggiungi spesa prevista">+</button>
+      </form>
+
+      <ul id="planned-expense-list" class="planned-expense-list"></ul>
+      <p id="planned-expense-empty" class="empty-state">Nessuna spesa prevista aggiunta.</p>
+      <div class="planned-expense-total">
+        <span>Totale previsto</span>
+        <span id="planned-expense-total-value">0,00 €</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📊 Chi sfora e chi risparmia</h2>
+      <p class="home-weekly-sub">Speso finora rispetto al budget di ogni categoria</p>
+
+      <p class="forecast-list-title over">⚠️ Sopra budget</p>
+      <div id="forecast-over-list" class="forecast-list"></div>
+      <p id="forecast-over-empty" class="empty-state">Nessuna categoria sopra budget, per ora 🎉</p>
+
+      <p class="forecast-list-title under">✅ Sotto budget</p>
+      <div id="forecast-under-list" class="forecast-list"></div>
+      <p id="forecast-under-empty" class="empty-state">Nessuna categoria sotto budget al momento.</p>
+    </div>
+
   </section>
 
   <!-- SPESE -->
