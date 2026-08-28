@@ -22,13 +22,25 @@
   <!-- HOME -->
   <section id="view-home" class="view">
 
-    <div class="card balance-card">
-      <div class="balance-row">
-        <div class="balance-item">
-          <span class="balance-label">💰 Saldo iniziale</span>
-          <div id="initial-balance-display" class="balance-value"></div>
+    <div class="card summary-card">
+      <div class="summary-grid">
+        <div class="summary-stat">
+          <div class="summary-stat-top">
+            <span class="summary-label">💰 Iniziale</span>
+            <button id="edit-balance-btn" class="edit-balance-btn" type="button" aria-label="Modifica saldo iniziale">✎</button>
+          </div>
+          <div id="initial-balance-display" class="summary-value"></div>
         </div>
-        <button id="edit-balance-btn" class="btn-chip" type="button">Modifica</button>
+        <div class="summary-divider"></div>
+        <div class="summary-stat">
+          <span class="summary-label">👛 Attuale</span>
+          <div id="stat-current-balance" class="summary-value">—</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-stat">
+          <span class="summary-label">🐷 Risparmiato</span>
+          <div id="stat-saved" class="summary-value">—</div>
+        </div>
       </div>
 
       <form id="balance-form" class="balance-form hidden">
@@ -38,20 +50,8 @@
           <button type="submit" class="btn-primary btn-small">Salva</button>
         </div>
       </form>
-    </div>
 
-    <div class="stats-grid">
-      <div class="card stat-card stat-current">
-        <span class="stat-icon">👛</span>
-        <span class="stat-label">Saldo attuale stimato</span>
-        <span id="stat-current-balance" class="stat-value">—</span>
-      </div>
-      <div class="card stat-card stat-saved">
-        <span class="stat-icon">🐷</span>
-        <span class="stat-label">Risparmiato finora</span>
-        <span id="stat-saved" class="stat-value">—</span>
-        <span class="stat-caption">saldo iniziale − spese − budget non ancora usato</span>
-      </div>
+      <p class="summary-caption">🐷 = iniziale − spese − budget non ancora usato</p>
     </div>
 
     <div class="card home-weekly-card">

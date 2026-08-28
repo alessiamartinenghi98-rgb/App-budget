@@ -205,7 +205,7 @@
     var display = document.getElementById("initial-balance-display");
     var value = balances[currentCycleKey];
     if (value === undefined || value === null) {
-      display.textContent = "da impostare 🌟";
+      display.textContent = "imposta 👆";
       display.classList.add("muted");
     } else {
       display.textContent = currencyFormatter.format(value);
@@ -221,7 +221,7 @@
     var savedEl = document.getElementById("stat-saved");
 
     if (initial === undefined || initial === null) {
-      currentEl.textContent = "imposta il saldo 👆";
+      currentEl.textContent = "—";
       savedEl.textContent = "—";
       renderGoal(null);
       return;
