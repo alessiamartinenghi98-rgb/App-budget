@@ -47,22 +47,6 @@
       <div id="home-weekly-list" class="home-weekly-list"></div>
     </div>
 
-    <div class="card goal-card">
-      <div class="goal-header">
-        <h2>🌴 Obiettivo del mese</h2>
-        <span class="goal-target">600 €</span>
-      </div>
-      <p class="goal-sub">500 € viaggio + 100 € da accantonare</p>
-      <div class="goal-bar-track">
-        <div id="goal-bar-fill" class="goal-bar-fill"></div>
-      </div>
-      <div class="goal-footer">
-        <span id="goal-amount-left" class="goal-amount"></span>
-        <span id="goal-percent" class="goal-percent"></span>
-      </div>
-      <p id="goal-message" class="goal-message"></p>
-    </div>
-
     <div class="card forecast-card">
       <div class="forecast-header">
         <h2>🔮 Forecast del mese</h2>
@@ -92,7 +76,7 @@
 
     <div class="card">
       <h2>📝 Spese previste</h2>
-      <p class="home-weekly-sub">Uscite occasionali non ancora fatte, incluse nel forecast</p>
+      <p class="home-weekly-sub">Uscite occasionali non ancora fatte, incluse nel forecast. Quando le registri come spesa vera, spuntale: così non contano due volte.</p>
 
       <form id="planned-expense-form" class="planned-expense-form">
         <input type="text" id="planned-label" placeholder="Es. regalo compleanno" maxlength="60" required>
@@ -119,6 +103,22 @@
       <p class="forecast-list-title under">✅ Sotto budget</p>
       <div id="forecast-under-list" class="forecast-list"></div>
       <p id="forecast-under-empty" class="empty-state">Nessuna categoria sotto budget al momento.</p>
+    </div>
+
+    <div class="card goal-card">
+      <div class="goal-header">
+        <h2>🌴 Obiettivo del mese</h2>
+        <span class="goal-target">600 €</span>
+      </div>
+      <p class="goal-sub">500 € viaggio + 100 € da accantonare</p>
+      <div class="goal-bar-track">
+        <div id="goal-bar-fill" class="goal-bar-fill"></div>
+      </div>
+      <div class="goal-footer">
+        <span id="goal-amount-left" class="goal-amount"></span>
+        <span id="goal-percent" class="goal-percent"></span>
+      </div>
+      <p id="goal-message" class="goal-message"></p>
     </div>
 
   </section>

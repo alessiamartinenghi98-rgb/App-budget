@@ -236,7 +236,11 @@
   }
 
   function totalPlannedExtra(cycleKey) {
-    return totalSpent(plannedExpensesInCycle(cycleKey));
+    return totalSpent(
+      plannedExpensesInCycle(cycleKey).filter(function (p) {
+        return !p.done;
+      })
+    );
   }
 
   function projectedCategorySpend(cycleKey, cat) {
@@ -383,8 +387,9 @@
       emptyEl.classList.remove("visible");
       items.forEach(function (item) {
         var li = document.createElement("li");
-        li.className = "planned-expense-item";
+        li.className = "planned-expense-item" + (item.done ? " done" : "");
         li.innerHTML =
+          '<input type="checkbox" class="planned-expense-check" data-id="' + item.id + '" aria-label="Segna come fatta" ' + (item.done ? "checked" : "") + ">" +
           '<span class="planned-expense-name">' + escapeHtml(item.label) + "</span>" +
           '<span class="planned-expense-amount">' + currencyFormatter.format(item.amount) + "</span>" +
           '<button class="planned-expense-delete" data-id="' + item.id + '" aria-label="Rimuovi spesa prevista">✕</button>';
@@ -821,6 +826,7 @@
         cycleKey: currentCycleKey,
         label: label,
         amount: Math.round(amount * 100) / 100,
+        done: false,
         createdAt: Date.now()
       });
 
@@ -836,6 +842,19 @@
       plannedExpenses = plannedExpenses.filter(function (p) {
         return p.id !== id;
       });
+      savePlannedExpenses(plannedExpenses);
+      renderAll();
+    });
+
+    document.getElementById("planned-expense-list").addEventListener("change", function (e) {
+      var checkbox = e.target.closest(".planned-expense-check");
+      if (!checkbox) return;
+      var id = checkbox.getAttribute("data-id");
+      var item = plannedExpenses.find(function (p) {
+        return p.id === id;
+      });
+      if (!item) return;
+      item.done = checkbox.checked;
       savePlannedExpenses(plannedExpenses);
       renderAll();
     });
