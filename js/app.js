@@ -37,7 +37,8 @@
     { key: "bollette", label: "Bollette", icon: "💡", color: "yellow", budget: 40 },
     { key: "spesa", label: "Spesa", icon: "🛒", color: "peach", budget: 130, weekly: true },
     { key: "dentista", label: "Dentista", icon: "🦷", color: "pink", budget: 86 },
-    { key: "benzina", label: "Benzina", icon: "⛽", color: "lilac", budget: 250, weekly: true }
+    { key: "benzina", label: "Benzina", icon: "⛽", color: "lilac", budget: 250, weekly: true },
+    { key: "altro", label: "Altro", icon: "📦", color: "sky", budget: null }
   ];
 
   var currencyFormatter = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" });
@@ -189,7 +190,9 @@
   }
 
   function totalBudgetResidue(cycleKey) {
-    return CATEGORIES.reduce(function (sum, cat) {
+    return CATEGORIES.filter(function (cat) {
+      return cat.budget;
+    }).reduce(function (sum, cat) {
       var spent = spentByCategory(cycleKey, cat.key);
       return sum + Math.max(cat.budget - spent, 0);
     }, 0);
@@ -398,11 +401,25 @@
 
     CATEGORIES.forEach(function (cat) {
       var spent = spentByCategory(currentCycleKey, cat.key);
-      var pct = Math.round((spent / cat.budget) * 100);
-      var barPct = Math.min(pct, 100);
 
       var card = document.createElement("div");
       card.className = "budget-card";
+
+      if (!cat.budget) {
+        card.innerHTML =
+          '<div class="budget-card-header">' +
+            '<div class="budget-icon" style="background:var(--' + cat.color + ')">' + cat.icon + "</div>" +
+            '<div class="budget-title">' + cat.label + "</div>" +
+            '<div class="budget-amounts">' + currencyFormatter.format(spent) +
+              '<div class="budget-percent">senza budget</div>' +
+            "</div>" +
+          "</div>";
+        container.appendChild(card);
+        return;
+      }
+
+      var pct = Math.round((spent / cat.budget) * 100);
+      var barPct = Math.min(pct, 100);
 
       var subchips = "";
       if (cat.subcategories) {
