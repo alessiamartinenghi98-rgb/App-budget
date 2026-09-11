@@ -1,38 +1,38 @@
 :root {
-  --bg: #fff6fb;
+  --bg: #f7f5f7;
   --surface: #ffffff;
-  --surface-soft: #fff0f6;
-  --text: #5b4b66;
-  --muted: #9a8aa8;
-  --border: #f5e2ee;
+  --surface-soft: #f4f1f4;
+  --text: #201d26;
+  --muted: #736e7d;
+  --border: #e9e6eb;
 
-  --accent: #f2739e;
-  --accent-dark: #e2568a;
-  --accent-tint: #ffe1ec;
+  --accent: #a83467;
+  --accent-dark: #8a2554;
+  --accent-tint: #f6e3ec;
 
-  --pink: #ffc6d9;
-  --pink-strong: #ff9ebf;
-  --lilac: #dac4f7;
-  --lilac-strong: #b98cf0;
-  --sky: #bee7fa;
-  --sky-strong: #7fcbea;
-  --yellow: #fff0ad;
-  --yellow-strong: #f5c744;
-  --peach: #ffd3b0;
-  --peach-strong: #ffab6e;
+  --pink: #f1dde5;
+  --pink-strong: #c07295;
+  --lilac: #e6e0f1;
+  --lilac-strong: #7d63b3;
+  --sky: #dde8f1;
+  --sky-strong: #4f7fa8;
+  --yellow: #f1ecd9;
+  --yellow-strong: #ad8b28;
+  --peach: #f1e3d9;
+  --peach-strong: #b87142;
 
-  --good: #8ed1a8;
-  --good-tint: #e4f7ea;
-  --warn: #ffb37b;
-  --warn-tint: #fff0e0;
-  --over: #f2739e;
-  --over-tint: #ffe1ec;
+  --good: #2f8f5b;
+  --good-tint: #e3f2e9;
+  --warn: #ad8b28;
+  --warn-tint: #f6f0dc;
+  --over: #b23a56;
+  --over-tint: #f8e6ea;
 
-  --radius-lg: 24px;
-  --radius-md: 16px;
-  --radius-sm: 10px;
-  --nav-height: 68px;
-  --shadow: 0 10px 24px -12px rgba(178, 120, 160, 0.28);
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 8px;
+  --nav-height: 64px;
+  --shadow: 0 1px 2px rgba(32, 29, 38, 0.04), 0 6px 16px -12px rgba(32, 29, 38, 0.12);
 }
 
 * {
@@ -45,7 +45,7 @@ html, body {
 }
 
 body {
-  font-family: "Quicksand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--bg);
   color: var(--text);
   padding-bottom: calc(var(--nav-height) + 20px);
@@ -53,15 +53,15 @@ body {
 }
 
 h1, h2 {
-  font-family: "Fredoka", "Quicksand", sans-serif;
+  font-family: "Manrope", sans-serif;
   text-wrap: balance;
 }
 
 .app-header {
-  background: linear-gradient(135deg, var(--accent), var(--lilac-strong));
-  color: #fff;
-  padding: 12px 18px 16px;
-  border-radius: 0 0 18px 18px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -69,21 +69,22 @@ h1, h2 {
 
 .app-header h1 {
   margin: 0;
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .cycle-label {
-  margin: 3px 0 0;
+  margin: 2px 0 0;
   font-size: 0.72rem;
   font-weight: 600;
-  opacity: 0.85;
+  color: var(--muted);
 }
 
 .app-main {
   max-width: 480px;
-  margin: -8px auto 0;
-  padding: 0 16px 16px;
+  margin: 0 auto;
+  padding: 16px 16px 16px;
 }
 
 .view.hidden {
@@ -94,22 +95,22 @@ h1, h2 {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 18px;
+  padding: 16px;
   box-shadow: var(--shadow);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .card h2 {
   margin: 0 0 8px;
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 /* Summary card (saldo attuale / spese / risparmio) */
 
 .summary-card {
-  background: var(--surface-soft);
-  padding: 8px 4px;
+  background: var(--surface);
+  padding: 14px 4px;
 }
 
 .summary-grid {
@@ -123,46 +124,46 @@ h1, h2 {
   width: 1px;
   align-self: stretch;
   margin: 2px 0;
-  background: rgba(91, 75, 102, 0.16);
+  background: var(--border);
 }
 
 .summary-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
   padding: 0 2px;
 }
 
 .summary-label {
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  color: var(--text);
-  opacity: 0.72;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   white-space: nowrap;
 }
 
 .summary-value {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--accent-dark);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
   line-height: 1.2;
   text-align: center;
 }
 
 .summary-value.muted {
   color: var(--muted);
-  font-size: 0.66rem;
-  font-weight: 700;
+  font-size: 0.7rem;
+  font-weight: 600;
 }
 
 /* Saldo iniziale card (Budget tab) */
 
 .balance-card-budget {
-  background: var(--surface-soft);
+  background: var(--surface);
 }
 
 .balance-row-budget {
@@ -174,35 +175,34 @@ h1, h2 {
 
 .balance-label-budget {
   display: block;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--text);
-  opacity: 0.72;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--muted);
   margin-bottom: 4px;
 }
 
 .balance-value-budget {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--accent-dark);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
 }
 
 .balance-value-budget.muted {
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .edit-balance-btn {
-  background: var(--accent-tint);
-  color: var(--accent-dark);
-  border: none;
+  background: var(--surface-soft);
+  color: var(--text);
+  border: 1px solid var(--border);
   border-radius: 50%;
-  width: 26px;
-  height: 26px;
-  min-width: 26px;
-  font-size: 0.75rem;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  font-size: 0.72rem;
   line-height: 1;
   cursor: pointer;
   display: flex;
@@ -215,7 +215,7 @@ h1, h2 {
 .week-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .week-row {
@@ -230,29 +230,28 @@ h1, h2 {
 
 .week-row-label {
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 .week-row-dates {
   display: block;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.68rem;
   color: var(--muted);
 }
 
 .week-row-value {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  font-size: 0.92rem;
-  color: var(--accent-dark);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--text);
   white-space: nowrap;
 }
 
 .balance-form {
   margin: 14px 0 0;
   padding-top: 14px;
-  border-top: 1px dashed rgba(91, 75, 102, 0.2);
+  border-top: 1px solid var(--border);
 }
 
 .balance-form.hidden {
@@ -261,7 +260,7 @@ h1, h2 {
 
 .balance-form label {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--muted);
   margin-bottom: 6px;
@@ -288,7 +287,7 @@ h1, h2 {
 
 .field label {
   display: block;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--muted);
   margin-bottom: 6px;
@@ -298,11 +297,11 @@ h1, h2 {
 .field select,
 .balance-input-row input {
   width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid var(--border);
+  padding: 11px 13px;
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  font-size: 1rem;
-  font-family: "Quicksand", sans-serif;
+  font-size: 0.95rem;
+  font-family: "Manrope", sans-serif;
   font-weight: 600;
   background: var(--surface);
   color: var(--text);
@@ -321,39 +320,80 @@ h1, h2 {
   background: var(--accent);
   color: #fff;
   border: none;
-  border-radius: 999px;
-  padding: 14px;
-  font-family: "Fredoka", sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 13px;
+  font-family: "Manrope", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
   cursor: pointer;
   transition: transform 0.12s ease, background 0.15s ease;
 }
 
 .btn-primary:active {
   background: var(--accent-dark);
-  transform: scale(0.97);
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  width: 100%;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 13px;
+  font-family: "Manrope", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .btn-small {
   width: auto;
-  padding: 10px 18px;
-  font-size: 0.9rem;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 8px;
+}
+
+.form-row .btn-primary,
+.form-row .btn-secondary {
+  flex: 1;
+}
+
+/* Expense form header (add / edit mode) */
+
+.expense-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.expense-form-header.hidden {
+  display: none;
+}
+
+.expense-form-header span {
+  font-weight: 700;
+  font-size: 0.92rem;
 }
 
 /* Home weekly rhythm card */
 
 .home-weekly-sub {
   margin: 0 0 14px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 500;
   color: var(--muted);
 }
 
 .home-weekly-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .mini-budget {
@@ -370,17 +410,17 @@ h1, h2 {
 }
 
 .mini-budget-icon {
-  font-size: 1.05rem;
+  font-size: 1rem;
 }
 
 .mini-budget-label {
   flex: 1;
   font-weight: 700;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
 }
 
 .mini-budget-pct {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--muted);
 }
@@ -393,7 +433,7 @@ h1, h2 {
 }
 
 .mini-row-label {
-  font-size: 0.66rem;
+  font-size: 0.64rem;
   font-weight: 700;
   color: var(--muted);
   width: 34px;
@@ -402,7 +442,7 @@ h1, h2 {
 
 .mini-track {
   flex: 1;
-  height: 8px;
+  height: 6px;
   border-radius: 999px;
   background: var(--surface);
   overflow: hidden;
@@ -415,10 +455,9 @@ h1, h2 {
 }
 
 .mini-row-value {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -429,7 +468,8 @@ h1, h2 {
 /* Goal card */
 
 .goal-card {
-  background: linear-gradient(160deg, var(--yellow), var(--peach));
+  background: var(--surface);
+  border-left: 3px solid var(--peach-strong);
 }
 
 .goal-header {
@@ -439,32 +479,29 @@ h1, h2 {
 }
 
 .goal-target {
-  font-family: "Fredoka", sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
-  background: rgba(255, 255, 255, 0.6);
-  padding: 4px 12px;
-  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .goal-sub {
   margin: 2px 0 14px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  opacity: 0.75;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
 }
 
 .goal-bar-track {
-  height: 14px;
+  height: 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--surface-soft);
   overflow: hidden;
 }
 
 .goal-bar-fill {
   height: 100%;
   border-radius: 999px;
-  background: var(--accent);
+  background: var(--peach-strong);
   width: 0%;
   transition: width 0.4s ease;
 }
@@ -477,27 +514,28 @@ h1, h2 {
 }
 
 .goal-amount {
-  font-family: "Fredoka", sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 700;
+  font-size: 0.92rem;
 }
 
 .goal-percent {
   font-weight: 700;
-  font-size: 0.9rem;
-  opacity: 0.75;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .goal-message {
   margin: 10px 0 0;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
 }
 
 /* Forecast card */
 
 .forecast-card {
-  background: linear-gradient(160deg, var(--lilac), var(--sky));
+  background: var(--surface);
+  border-left: 3px solid var(--lilac-strong);
 }
 
 .forecast-header h2 {
@@ -509,7 +547,7 @@ h1, h2 {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  background: rgba(255, 255, 255, 0.45);
+  background: var(--surface-soft);
   border-radius: var(--radius-md);
   padding: 10px 14px;
 }
@@ -518,41 +556,52 @@ h1, h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   margin-top: 16px;
   text-align: center;
 }
 
 .forecast-amount {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
-  font-size: 1.7rem;
-  font-weight: 700;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--text);
 }
 
 .forecast-amount.positive {
-  color: #2f7d52;
+  color: var(--good);
 }
 
 .forecast-amount.negative {
-  color: var(--accent-dark);
+  color: var(--over);
 }
 
 .forecast-goal-delta {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   padding: 4px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+.forecast-goal-delta.positive {
+  background: var(--good-tint);
+  color: var(--good);
+}
+
+.forecast-goal-delta.negative {
+  background: var(--over-tint);
+  color: var(--over);
 }
 
 .forecast-message {
   margin: 10px 2px 0;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 500;
   text-align: center;
-  opacity: 0.8;
+  color: var(--muted);
 }
 
 /* Spese previste */
@@ -567,11 +616,11 @@ h1, h2 {
   flex: 1;
   min-width: 0;
   padding: 10px 12px;
-  border: 1.5px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  font-family: "Quicksand", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   background: var(--surface);
   color: var(--text);
 }
@@ -579,11 +628,11 @@ h1, h2 {
 .planned-expense-form input[type="number"] {
   width: 84px;
   padding: 10px 10px;
-  border: 1.5px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  font-family: "Quicksand", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   background: var(--surface);
   color: var(--text);
 }
@@ -596,6 +645,7 @@ h1, h2 {
 .planned-add-btn {
   background: var(--accent);
   color: #fff;
+  border-color: transparent;
   width: 40px;
   height: auto;
   min-width: 40px;
@@ -622,9 +672,9 @@ h1, h2 {
 }
 
 .planned-expense-check {
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
   accent-color: var(--accent);
   cursor: pointer;
 }
@@ -633,7 +683,7 @@ h1, h2 {
   flex: 1;
   min-width: 0;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -646,16 +696,15 @@ h1, h2 {
 }
 
 .planned-expense-amount {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-weight: 700;
+  font-size: 0.84rem;
   white-space: nowrap;
 }
 
 .planned-expense-delete {
-  background: var(--over-tint);
-  color: var(--over);
+  background: transparent;
+  color: var(--muted);
   border: none;
   border-radius: 8px;
   width: 26px;
@@ -672,40 +721,42 @@ h1, h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--muted);
   padding-top: 10px;
-  border-top: 1px dashed var(--border);
+  border-top: 1px solid var(--border);
 }
 
 .planned-expense-total span:last-child {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
-  color: var(--accent-dark);
-  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.92rem;
 }
 
 /* Sopra / sotto budget lists */
 
 .forecast-list-title {
   margin: 14px 0 8px;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .forecast-list-title.over {
-  color: var(--accent-dark);
+  color: var(--over);
 }
 
 .forecast-list-title.under {
-  color: #2f7d52;
+  color: var(--good);
 }
 
 .forecast-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .forecast-row {
@@ -714,21 +765,20 @@ h1, h2 {
   gap: 10px;
   border-radius: var(--radius-sm);
   padding: 9px 12px;
-  border-left: 4px solid transparent;
+  background: var(--surface-soft);
+  border-left: 3px solid transparent;
 }
 
 .forecast-row.over {
-  background: var(--over-tint);
   border-left-color: var(--over);
 }
 
 .forecast-row.under {
-  background: var(--good-tint);
   border-left-color: var(--good);
 }
 
 .forecast-row-icon {
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .forecast-row-info {
@@ -738,29 +788,28 @@ h1, h2 {
 
 .forecast-row-label {
   font-weight: 700;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
 }
 
 .forecast-row-detail {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--muted);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .forecast-row-diff {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   white-space: nowrap;
 }
 
 .forecast-row.over .forecast-row-diff {
-  color: var(--accent-dark);
+  color: var(--over);
 }
 
 .forecast-row.under .forecast-row-diff {
-  color: #2f7d52;
+  color: var(--good);
 }
 
 /* Toast */
@@ -773,9 +822,9 @@ h1, h2 {
   background: var(--text);
   color: #fff;
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   padding: 10px 18px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow);
   z-index: 50;
   opacity: 0;
@@ -798,17 +847,17 @@ h1, h2 {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin: 20px 4px 10px;
+  margin: 18px 4px 10px;
 }
 
 .list-header h2 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 
 .muted {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 /* Expense list */
@@ -819,27 +868,31 @@ h1, h2 {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .expense-item {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 13px 14px;
-  box-shadow: var(--shadow);
+  padding: 12px 14px;
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
+}
+
+.expense-item:active {
+  background: var(--surface-soft);
 }
 
 .expense-item.new {
-  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: pop-in 0.3s ease;
 }
 
 @keyframes pop-in {
-  0% { opacity: 0; transform: scale(0.85) translateY(-6px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+  0% { opacity: 0; transform: translateY(-4px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -848,14 +901,14 @@ h1, h2 {
 }
 
 .expense-cat-icon {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   background: var(--surface-soft);
 }
 
@@ -866,17 +919,17 @@ h1, h2 {
 
 .expense-category {
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
 }
 
 .expense-sub {
-  font-size: 0.78rem;
-  color: var(--accent-dark);
+  font-size: 0.76rem;
+  color: var(--muted);
   font-weight: 600;
 }
 
 .expense-note {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -884,27 +937,26 @@ h1, h2 {
 }
 
 .expense-date {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   color: var(--muted);
   margin-top: 2px;
 }
 
 .expense-amount {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 700;
+  font-size: 0.95rem;
   white-space: nowrap;
 }
 
 .expense-delete {
-  background: var(--over-tint);
-  color: var(--over);
+  background: transparent;
+  color: var(--muted);
   border: none;
   border-radius: 8px;
-  width: 32px;
-  height: 32px;
-  font-size: 1rem;
+  width: 30px;
+  height: 30px;
+  font-size: 0.95rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -914,8 +966,8 @@ h1, h2 {
 .empty-state {
   text-align: center;
   color: var(--muted);
-  font-size: 0.9rem;
-  padding: 24px 8px;
+  font-size: 0.88rem;
+  padding: 22px 8px;
   display: none;
 }
 
@@ -927,22 +979,22 @@ h1, h2 {
 
 .budget-intro {
   margin: 4px 4px 14px;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--muted);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .budget-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .budget-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 18px;
+  padding: 16px;
   box-shadow: var(--shadow);
 }
 
@@ -954,38 +1006,37 @@ h1, h2 {
 }
 
 .budget-icon {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .budget-title {
   flex: 1;
   font-weight: 700;
-  font-size: 0.98rem;
+  font-size: 0.92rem;
 }
 
 .budget-amounts {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 0.86rem;
   text-align: right;
 }
 
 .budget-percent {
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 0.7rem;
+  font-weight: 600;
   color: var(--muted);
 }
 
 .budget-bar-track {
-  height: 12px;
+  height: 6px;
   border-radius: 999px;
   background: var(--surface-soft);
   overflow: hidden;
@@ -1000,55 +1051,55 @@ h1, h2 {
 
 .budget-remaining {
   margin: 8px 0 0;
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.76rem;
+  font-weight: 500;
   color: var(--muted);
 }
 
 .budget-warning {
   margin: 8px 0 0;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  padding: 8px 12px;
+  padding: 7px 11px;
   border-radius: var(--radius-sm);
   display: inline-block;
 }
 
 .budget-warning.warn {
   background: var(--warn-tint);
-  color: #b5651d;
+  color: #8a6a1d;
 }
 
 .budget-warning.over {
   background: var(--over-tint);
-  color: var(--accent-dark);
+  color: var(--over);
 }
 
 .budget-subrow {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   margin-top: 10px;
   flex-wrap: wrap;
 }
 
 .budget-subchip {
-  font-size: 0.74rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 600;
   color: var(--text);
   background: var(--surface-soft);
   padding: 5px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
 }
 
 .budget-week {
   margin-top: 14px;
   padding-top: 14px;
-  border-top: 1px dashed var(--border);
+  border-top: 1px solid var(--border);
 }
 
 .budget-week-title {
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.78rem;
+  font-weight: 600;
   color: var(--muted);
   margin: 0 0 8px;
 }
@@ -1061,28 +1112,27 @@ h1, h2 {
 }
 
 .budget-week-amounts {
-  font-family: "Fredoka", sans-serif;
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  font-size: 0.88rem;
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
 .pace-pill {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 5px 12px;
+  padding: 5px 11px;
   border-radius: 999px;
   white-space: nowrap;
 }
 
 .pace-pill.ontrack {
   background: var(--good-tint);
-  color: #2f7d52;
+  color: var(--good);
 }
 
 .pace-pill.behind {
   background: var(--over-tint);
-  color: var(--accent-dark);
+  color: var(--over);
 }
 
 /* Bottom nav */
@@ -1095,11 +1145,9 @@ h1, h2 {
   height: var(--nav-height);
   background: var(--surface);
   border-top: 1px solid var(--border);
-  border-radius: 22px 22px 0 0;
   display: flex;
   z-index: 20;
   padding-bottom: env(safe-area-inset-bottom);
-  box-shadow: 0 -6px 18px -12px rgba(178, 120, 160, 0.35);
 }
 
 .nav-btn {
@@ -1111,23 +1159,28 @@ h1, h2 {
   align-items: center;
   justify-content: center;
   gap: 2px;
-  font-family: "Quicksand", sans-serif;
-  font-size: 0.72rem;
+  font-family: "Manrope", sans-serif;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--muted);
   cursor: pointer;
 }
 
 .nav-btn .nav-icon {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
+  opacity: 0.7;
 }
 
 .nav-btn.active {
-  color: var(--accent-dark);
+  color: var(--accent);
+}
+
+.nav-btn.active .nav-icon {
+  opacity: 1;
 }
 
 @media (min-width: 600px) {
   .app-main {
-    padding: 0 16px 24px;
+    padding: 16px 16px 24px;
   }
 }

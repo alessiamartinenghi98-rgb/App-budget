@@ -174,6 +174,7 @@
   }
 
   var currentCycleKey = cycleKeyForDate(todayDate());
+  var editingExpenseId = null;
 
   // ---------- Derived data ----------
 
@@ -264,7 +265,7 @@
     var display = document.getElementById("initial-balance-display");
     var value = balances[currentCycleKey];
     if (value === undefined || value === null) {
-      display.textContent = "imposta 👆";
+      display.textContent = "da impostare";
       display.classList.add("muted");
     } else {
       display.textContent = currencyFormatter.format(value);
@@ -309,7 +310,7 @@
       fill.style.width = "0%";
       amountEl.textContent = "";
       percentEl.textContent = "";
-      messageEl.textContent = "Imposta il saldo iniziale per vedere i tuoi progressi 💫";
+      messageEl.textContent = "Imposta il saldo iniziale per vedere i tuoi progressi";
       return;
     }
 
@@ -318,12 +319,12 @@
     percentEl.textContent = pct + "%";
 
     if (saved >= SAVINGS_GOAL) {
-      amountEl.textContent = "Obiettivo raggiunto!";
-      messageEl.textContent = "🎉 Complimenti, hai raggiunto i tuoi 600 € di risparmio!";
+      amountEl.textContent = "Obiettivo raggiunto";
+      messageEl.textContent = "Complimenti, hai raggiunto i tuoi 600 € di risparmio.";
     } else {
       var missing = SAVINGS_GOAL - saved;
       amountEl.textContent = "Mancano " + currencyFormatter.format(missing);
-      messageEl.textContent = "✨ Continua così, ci sei quasi!";
+      messageEl.textContent = "Continua così, ci sei quasi.";
     }
   }
 
@@ -333,7 +334,7 @@
     var display = document.getElementById("salary-display");
     var value = salaries[currentCycleKey];
     if (value === undefined || value === null) {
-      display.textContent = "imposta 👆";
+      display.textContent = "da impostare";
       display.classList.add("muted");
     } else {
       display.textContent = currencyFormatter.format(value);
@@ -352,7 +353,8 @@
       amountEl.textContent = "—";
       amountEl.className = "forecast-amount";
       deltaEl.textContent = "";
-      messageEl.textContent = "Imposta lo stipendio previsto per vedere il forecast 💫";
+      deltaEl.className = "forecast-goal-delta";
+      messageEl.textContent = "Imposta lo stipendio previsto per vedere il forecast";
       return;
     }
 
@@ -364,10 +366,11 @@
     amountEl.textContent = currencyFormatter.format(forecast);
     amountEl.className = "forecast-amount " + (forecast >= 0 ? "positive" : "negative");
 
+    deltaEl.className = "forecast-goal-delta " + (delta >= 0 ? "positive" : "negative");
     if (delta >= 0) {
-      deltaEl.textContent = "🎉 +" + currencyFormatter.format(delta) + " sopra l'obiettivo di 600 €";
+      deltaEl.textContent = "+" + currencyFormatter.format(delta) + " sopra l'obiettivo di 600 €";
     } else {
-      deltaEl.textContent = "⚠️ " + currencyFormatter.format(delta) + " sotto l'obiettivo di 600 €";
+      deltaEl.textContent = currencyFormatter.format(delta) + " sotto l'obiettivo di 600 €";
     }
 
     messageEl.textContent = "Stipendio − budget delle categorie − spese previste, aggiornato in automatico";
@@ -518,6 +521,7 @@
 
       var li = document.createElement("li");
       li.className = "expense-item" + (exp.id === newId ? " new" : "");
+      li.setAttribute("data-id", exp.id);
       li.innerHTML =
         '<div class="expense-cat-icon">' + cat.icon + "</div>" +
         '<div class="expense-info">' +
@@ -630,16 +634,16 @@
 
       var remaining = "";
       if (spent < cat.budget) {
-        remaining = '<p class="budget-remaining">💶 Mancano ' + currencyFormatter.format(cat.budget - spent) + " al budget</p>";
+        remaining = '<p class="budget-remaining">Mancano ' + currencyFormatter.format(cat.budget - spent) + " al budget</p>";
       }
 
       var warning = "";
       if (spent > cat.budget) {
-        warning = '<div class="budget-warning over">🚨 Hai sforato di ' + currencyFormatter.format(spent - cat.budget) + "!</div>";
+        warning = '<div class="budget-warning over">Hai sforato di ' + currencyFormatter.format(spent - cat.budget) + "</div>";
       } else if (pct >= 100) {
-        warning = '<div class="budget-warning warn">🎯 Budget esaurito, occhio alle prossime spese!</div>';
+        warning = '<div class="budget-warning warn">Budget esaurito, occhio alle prossime spese</div>';
       } else if (pct >= 90) {
-        warning = '<div class="budget-warning warn">⚠️ Stai per sforare, occhio!</div>';
+        warning = '<div class="budget-warning warn">Stai per sforare</div>';
       }
 
       var weekBlock = "";
@@ -650,11 +654,11 @@
 
         weekBlock =
           '<div class="budget-week">' +
-            '<p class="budget-week-title">📅 Questa settimana (' + weekStartLabel + " – " + weekEndLabel + ")</p>" +
+            '<p class="budget-week-title">Questa settimana (' + weekStartLabel + " – " + weekEndLabel + ")</p>" +
             '<div class="budget-week-row">' +
               '<span class="budget-week-amounts">' + currencyFormatter.format(ws.weekSpent) + " di " + currencyFormatter.format(ws.weeklyTarget) + "</span>" +
               '<span class="pace-pill ' + (ws.onTrack ? "ontrack" : "behind") + '">' +
-                (ws.onTrack ? "🎉 Sei in linea!" : "⚠️ Sopra il ritmo") +
+                (ws.onTrack ? "In linea" : "Sopra il ritmo") +
               "</span>" +
             "</div>" +
           "</div>";
@@ -713,7 +717,7 @@
           '<span class="mini-row-value">' + currencyFormatter.format(ws.weekSpent) + " / " + currencyFormatter.format(ws.weeklyTarget) + "</span>" +
         "</div>" +
         '<span class="pace-pill mini-pace ' + (ws.onTrack ? "ontrack" : "behind") + '">' +
-          (ws.onTrack ? "🎉 In linea" : "⚠️ Sopra il ritmo") +
+          (ws.onTrack ? "In linea" : "Sopra il ritmo") +
         "</span>";
       container.appendChild(card);
     });
@@ -790,7 +794,7 @@
       balances[currentCycleKey] = Math.round(value * 100) / 100;
       saveBalances(balances);
       form.classList.add("hidden");
-      showToast("Salvato! 💾");
+      showToast("Salvato");
       renderAll();
     });
   }
@@ -813,7 +817,7 @@
       salaries[currentCycleKey] = Math.round(value * 100) / 100;
       saveSalaries(salaries);
       form.classList.add("hidden");
-      showToast("Salvato! 💾");
+      showToast("Salvato");
       renderAll();
     });
   }
@@ -866,12 +870,50 @@
     });
   }
 
+  function setExpenseFormMode(editing) {
+    document.getElementById("expense-form-header").classList.toggle("hidden", !editing);
+    document.getElementById("expense-submit-btn").textContent = editing ? "Salva modifiche" : "Aggiungi spesa";
+  }
+
+  function startEditExpense(id) {
+    var exp = expenses.find(function (e) {
+      return e.id === id;
+    });
+    if (!exp) return;
+
+    editingExpenseId = id;
+
+    document.getElementById("amount").value = exp.amount;
+    document.getElementById("category").value = exp.category;
+    updateSubcategoryField();
+    if (exp.subcategory) {
+      document.getElementById("subcategory").value = exp.subcategory;
+    }
+    document.getElementById("date").value = exp.date;
+    document.getElementById("note").value = exp.note || "";
+
+    setExpenseFormMode(true);
+
+    var form = document.getElementById("expense-form");
+    form.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function cancelEditExpense() {
+    editingExpenseId = null;
+    var form = document.getElementById("expense-form");
+    form.reset();
+    document.getElementById("date").value = todayISO();
+    updateSubcategoryField();
+    setExpenseFormMode(false);
+  }
+
   function initExpenseForm() {
     var form = document.getElementById("expense-form");
     var dateInput = document.getElementById("date");
     dateInput.value = todayISO();
 
     document.getElementById("category").addEventListener("change", updateSubcategoryField);
+    document.getElementById("cancel-edit-btn").addEventListener("click", cancelEditExpense);
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -884,6 +926,28 @@
       var subcategory = cat && cat.subcategories ? document.getElementById("subcategory").value : null;
 
       if (!amount || amount <= 0 || !date) return;
+
+      if (editingExpenseId) {
+        var existing = expenses.find(function (exp) {
+          return exp.id === editingExpenseId;
+        });
+        if (existing) {
+          existing.amount = Math.round(amount * 100) / 100;
+          existing.category = category;
+          existing.subcategory = subcategory;
+          existing.date = date;
+          existing.note = note;
+        }
+        saveExpenses(expenses);
+        editingExpenseId = null;
+        form.reset();
+        dateInput.value = todayISO();
+        updateSubcategoryField();
+        setExpenseFormMode(false);
+        showToast("Modifiche salvate");
+        renderAll();
+        return;
+      }
 
       var id = Date.now() + "-" + Math.random().toString(36).slice(2, 8);
       expenses.push({
@@ -900,7 +964,7 @@
       form.reset();
       dateInput.value = todayISO();
       updateSubcategoryField();
-      showToast("Spesa aggiunta! ✨");
+      showToast("Spesa aggiunta");
       renderAll(id);
     });
   }
@@ -909,12 +973,23 @@
     document.getElementById("expense-list").addEventListener("click", function (e) {
       var btn = e.target.closest(".expense-delete");
       if (!btn) return;
+      e.stopPropagation();
       var id = btn.getAttribute("data-id");
+      if (id === editingExpenseId) {
+        cancelEditExpense();
+      }
       expenses = expenses.filter(function (exp) {
         return exp.id !== id;
       });
       saveExpenses(expenses);
       renderAll();
+    });
+
+    document.getElementById("expense-list").addEventListener("click", function (e) {
+      if (e.target.closest(".expense-delete")) return;
+      var item = e.target.closest(".expense-item");
+      if (!item) return;
+      startEditExpense(item.getAttribute("data-id"));
     });
   }
 

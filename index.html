@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F2739E">
-<title>Le Mie Spese 💕</title>
+<meta name="theme-color" content="#A83467">
+<title>Le Mie Spese</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header class="app-header">
-  <h1>✨ Le Mie Spese</h1>
+  <h1>Le Mie Spese</h1>
   <p id="cycle-label" class="cycle-label"></p>
 </header>
 
@@ -24,36 +24,36 @@
     <div class="card summary-card">
       <div class="summary-grid">
         <div class="summary-stat">
-          <span class="summary-label">👛 Attuale</span>
+          <span class="summary-label">Attuale</span>
           <div id="stat-current-balance" class="summary-value">—</div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-stat">
-          <span class="summary-label">🧾 Spese</span>
+          <span class="summary-label">Spese</span>
           <div id="stat-spent-total" class="summary-value">—</div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-stat">
-          <span class="summary-label">🐷 Risparmio</span>
+          <span class="summary-label">Risparmio</span>
           <div id="stat-saved" class="summary-value">—</div>
         </div>
       </div>
     </div>
 
     <div class="card home-weekly-card">
-      <h2>⏱️ Ritmo di spesa</h2>
+      <h2>Ritmo di spesa</h2>
       <p class="home-weekly-sub">Categorie con budget settimanale</p>
       <div id="home-weekly-list" class="home-weekly-list"></div>
     </div>
 
     <div class="card forecast-card">
       <div class="forecast-header">
-        <h2>🔮 Forecast del mese</h2>
+        <h2>Forecast del mese</h2>
       </div>
 
       <div class="forecast-input-row">
         <div>
-          <span class="balance-label-budget">💼 Stipendio previsto</span>
+          <span class="balance-label-budget">Stipendio previsto</span>
           <div id="salary-display" class="balance-value-budget"></div>
         </div>
         <button id="edit-salary-btn" class="edit-balance-btn" type="button" aria-label="Modifica stipendio previsto">✎</button>
@@ -74,7 +74,7 @@
     </div>
 
     <div class="card">
-      <h2>📝 Spese previste</h2>
+      <h2>Spese previste</h2>
       <p class="home-weekly-sub">Uscite occasionali non ancora fatte, incluse nel forecast. Quando le registri come spesa vera, spuntale: così non contano due volte.</p>
 
       <form id="planned-expense-form" class="planned-expense-form">
@@ -92,21 +92,21 @@
     </div>
 
     <div class="card">
-      <h2>📊 Chi sfora e chi risparmia</h2>
+      <h2>Chi sfora e chi risparmia</h2>
       <p class="home-weekly-sub">Speso finora rispetto al budget di ogni categoria</p>
 
-      <p class="forecast-list-title over">⚠️ Sopra budget</p>
+      <p class="forecast-list-title over">Sopra budget</p>
       <div id="forecast-over-list" class="forecast-list"></div>
-      <p id="forecast-over-empty" class="empty-state">Nessuna categoria sopra budget, per ora 🎉</p>
+      <p id="forecast-over-empty" class="empty-state">Nessuna categoria sopra budget, per ora.</p>
 
-      <p class="forecast-list-title under">✅ Sotto budget</p>
+      <p class="forecast-list-title under">Sotto budget</p>
       <div id="forecast-under-list" class="forecast-list"></div>
       <p id="forecast-under-empty" class="empty-state">Nessuna categoria sotto budget al momento.</p>
     </div>
 
     <div class="card goal-card">
       <div class="goal-header">
-        <h2>🌴 Obiettivo del mese</h2>
+        <h2>Obiettivo del mese</h2>
         <span class="goal-target">600 €</span>
       </div>
       <p class="goal-sub">500 € viaggio + 100 € da accantonare</p>
@@ -126,6 +126,11 @@
   <section id="view-spese" class="view hidden">
 
     <form id="expense-form" class="card expense-form">
+      <div id="expense-form-header" class="expense-form-header hidden">
+        <span>Modifica spesa</span>
+        <button type="button" id="cancel-edit-btn" class="edit-balance-btn" aria-label="Annulla modifica">✕</button>
+      </div>
+
       <div class="field">
         <label for="amount">Importo (€)</label>
         <input type="number" id="amount" inputmode="decimal" step="0.01" min="0.01" placeholder="0,00" required>
@@ -151,7 +156,7 @@
         <input type="text" id="note" placeholder="Es. aperitivo con Giulia" maxlength="80">
       </div>
 
-      <button type="submit" class="btn-primary">Aggiungi spesa 🌸</button>
+      <button type="submit" id="expense-submit-btn" class="btn-primary">Aggiungi spesa</button>
     </form>
 
     <div id="toast" class="toast hidden"></div>
@@ -162,7 +167,7 @@
     </div>
 
     <ul id="expense-list" class="expense-list"></ul>
-    <p id="empty-state" class="empty-state">Nessuna spesa in questo ciclo. Aggiungine una qui sopra 👆</p>
+    <p id="empty-state" class="empty-state">Nessuna spesa in questo ciclo. Aggiungine una qui sopra.</p>
 
   </section>
 
@@ -172,7 +177,7 @@
     <div class="card balance-card-budget">
       <div class="balance-row-budget">
         <div>
-          <span class="balance-label-budget">💰 Saldo iniziale (dal 27)</span>
+          <span class="balance-label-budget">Saldo iniziale (dal 27)</span>
           <div id="initial-balance-display" class="balance-value-budget"></div>
         </div>
         <button id="edit-balance-btn" class="edit-balance-btn" type="button" aria-label="Modifica saldo iniziale">✎</button>
@@ -187,11 +192,11 @@
       </form>
     </div>
 
-    <p class="budget-intro">Ecco come sta andando ogni categoria in questo ciclo 🌷</p>
+    <p class="budget-intro">Ecco come sta andando ogni categoria in questo ciclo.</p>
     <div id="budget-list" class="budget-list"></div>
 
     <div class="card">
-      <h2>📅 Spese per settimana</h2>
+      <h2>Spese per settimana</h2>
       <p class="home-weekly-sub">Totale di tutte le categorie, esclusa l'Affitto</p>
       <div id="weekly-breakdown-list" class="week-list"></div>
     </div>
@@ -210,7 +215,7 @@
     <span>Spese</span>
   </button>
   <button class="nav-btn" data-view="view-budget">
-    <span class="nav-icon">🌈</span>
+    <span class="nav-icon">📊</span>
     <span>Budget</span>
   </button>
 </nav>
