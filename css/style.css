@@ -218,14 +218,22 @@ h1, h2 {
   gap: 8px;
 }
 
+.week-item {
+  background: var(--surface-soft);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
 .week-row {
+  all: unset;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  background: var(--surface-soft);
-  border-radius: var(--radius-md);
+  gap: 8px;
   padding: 10px 14px;
+  width: 100%;
+  cursor: pointer;
 }
 
 .week-row-label {
@@ -245,6 +253,77 @@ h1, h2 {
   font-weight: 700;
   font-size: 0.88rem;
   color: var(--text);
+  white-space: nowrap;
+}
+
+.week-row-caret {
+  font-size: 0.65rem;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+.week-row.open .week-row-caret {
+  transform: rotate(180deg);
+}
+
+.week-detail {
+  padding: 0 14px 12px;
+}
+
+.week-detail-budget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  margin-bottom: 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.week-expense-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.week-expense-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+}
+
+.week-expense-icon {
+  font-size: 0.9rem;
+}
+
+.week-expense-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.week-expense-label {
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.week-expense-date {
+  font-size: 0.68rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.week-expense-amount {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 0.78rem;
   white-space: nowrap;
 }
 
@@ -345,6 +424,11 @@ h1, h2 {
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .btn-small {

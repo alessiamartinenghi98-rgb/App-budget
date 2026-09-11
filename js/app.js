@@ -5,6 +5,7 @@
   var BALANCES_KEY = "budgetapp:initial-balances";
   var SALARIES_KEY = "budgetapp:planned-salary";
   var PLANNED_EXPENSES_KEY = "budgetapp:planned-expenses";
+  var CATEGORY_BUDGETS_KEY = "budgetapp:category-budgets";
   var CYCLE_START_DAY = 27;
   var SAVINGS_GOAL = 600;
   var WEEKS_PER_CYCLE = 4;
@@ -22,6 +23,7 @@
         { key: "cene", label: "Cene/Pranzi", icon: "🍝" }
       ]
     },
+    { key: "tempo_libero", label: "Tempo Libero", icon: "🎬", color: "yellow", budget: null, editableBudget: true },
     {
       key: "bellezza",
       label: "Bellezza",
@@ -100,10 +102,39 @@
     localStorage.setItem(PLANNED_EXPENSES_KEY, JSON.stringify(list));
   }
 
+  function loadCategoryBudget(key) {
+    try {
+      var raw = localStorage.getItem(CATEGORY_BUDGETS_KEY);
+      var map = raw ? JSON.parse(raw) : {};
+      return map[key] !== undefined ? map[key] : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveCategoryBudget(key, value) {
+    var raw = localStorage.getItem(CATEGORY_BUDGETS_KEY);
+    var map = {};
+    try {
+      map = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      map = {};
+    }
+    map[key] = value;
+    localStorage.setItem(CATEGORY_BUDGETS_KEY, JSON.stringify(map));
+  }
+
   var expenses = loadExpenses();
   var balances = loadBalances();
   var salaries = loadSalaries();
   var plannedExpenses = loadPlannedExpenses();
+
+  CATEGORIES.filter(function (cat) {
+    return cat.editableBudget;
+  }).forEach(function (cat) {
+    var stored = loadCategoryBudget(cat.key);
+    if (stored !== null) cat.budget = stored;
+  });
 
   // ---------- Date / cycle helpers ----------
 
@@ -175,6 +206,7 @@
 
   var currentCycleKey = cycleKeyForDate(todayDate());
   var editingExpenseId = null;
+  var expandedWeekIndex = null;
 
   // ---------- Derived data ----------
 
@@ -607,14 +639,20 @@
       card.className = "budget-card";
 
       if (!cat.budget) {
+        var placeholderLabel = cat.editableBudget ? "budget da impostare" : "senza budget";
+        var editBtn = cat.editableBudget
+          ? '<button class="edit-balance-btn category-budget-edit-btn" type="button" data-key="' + cat.key + '" aria-label="Imposta budget">✎</button>'
+          : "";
         card.innerHTML =
           '<div class="budget-card-header">' +
             '<div class="budget-icon" style="background:var(--' + cat.color + ')">' + cat.icon + "</div>" +
             '<div class="budget-title">' + cat.label + "</div>" +
             '<div class="budget-amounts">' + currencyFormatter.format(spent) +
-              '<div class="budget-percent">senza budget</div>' +
+              '<div class="budget-percent">' + placeholderLabel + "</div>" +
             "</div>" +
-          "</div>";
+            editBtn +
+          "</div>" +
+          categoryBudgetForm(cat);
         container.appendChild(card);
         return;
       }
@@ -664,6 +702,10 @@
           "</div>";
       }
 
+      var editBtnSet = cat.editableBudget
+        ? '<button class="edit-balance-btn category-budget-edit-btn" type="button" data-key="' + cat.key + '" aria-label="Modifica budget">✎</button>'
+        : "";
+
       card.innerHTML =
         '<div class="budget-card-header">' +
           '<div class="budget-icon" style="background:var(--' + cat.color + ')">' + cat.icon + "</div>" +
@@ -671,15 +713,30 @@
           '<div class="budget-amounts">' + currencyFormatter.format(spent) + " / " + currencyFormatter.format(cat.budget) +
             '<div class="budget-percent">' + pct + "%</div>" +
           "</div>" +
+          editBtnSet +
         "</div>" +
         '<div class="budget-bar-track"><div class="budget-bar-fill" style="width:' + barPct + "%;background:var(--" + cat.color + "-strong)\"></div></div>" +
         remaining +
         warning +
         subchips +
-        weekBlock;
+        weekBlock +
+        categoryBudgetForm(cat);
 
       container.appendChild(card);
     });
+  }
+
+  function categoryBudgetForm(cat) {
+    if (!cat.editableBudget) return "";
+    return (
+      '<form class="balance-form hidden category-budget-form" data-key="' + cat.key + '">' +
+        '<label>Budget mensile per ' + cat.label + "</label>" +
+        '<div class="balance-input-row">' +
+          '<input type="number" class="category-budget-input" inputmode="decimal" step="0.01" min="0" placeholder="0,00" value="' + (cat.budget || "") + '">' +
+          '<button type="submit" class="btn-primary btn-small">Salva</button>' +
+        "</div>" +
+      "</form>"
+    );
   }
 
   // ---------- Rendering: home weekly rhythm ----------
@@ -725,23 +782,131 @@
 
   // ---------- Rendering: weekly breakdown (Budget view) ----------
 
+  function expensesInRangeExcluding(excludeCatKey, start, end) {
+    return expenses
+      .filter(function (exp) {
+        if (exp.category === excludeCatKey) return false;
+        var d = parseISODate(exp.date);
+        return d >= start && d <= end;
+      })
+      .sort(function (a, b) {
+        if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+        return b.createdAt - a.createdAt;
+      });
+  }
+
+  function totalWeeklyTargetExclAffitto() {
+    return CATEGORIES.filter(function (cat) {
+      return cat.budget && cat.key !== "affitto";
+    }).reduce(function (sum, cat) {
+      return sum + cat.budget / WEEKS_PER_CYCLE;
+    }, 0);
+  }
+
+  function renderAltroMigrateList() {
+    var listEl = document.getElementById("altro-migrate-list");
+    var emptyEl = document.getElementById("altro-migrate-empty");
+    var btn = document.getElementById("altro-migrate-btn");
+
+    var altroExpenses = expenses
+      .filter(function (exp) {
+        return exp.category === "altro";
+      })
+      .sort(function (a, b) {
+        if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+        return b.createdAt - a.createdAt;
+      });
+
+    listEl.innerHTML = "";
+
+    if (altroExpenses.length === 0) {
+      emptyEl.classList.add("visible");
+      btn.disabled = true;
+      return;
+    }
+    emptyEl.classList.remove("visible");
+
+    altroExpenses.forEach(function (exp) {
+      var li = document.createElement("li");
+      li.className = "planned-expense-item";
+      li.innerHTML =
+        '<input type="checkbox" class="planned-expense-check altro-migrate-check" data-id="' + exp.id + '">' +
+        '<span class="planned-expense-name">' + formatDate(exp.date) + (exp.note ? " · " + escapeHtml(exp.note) : "") + "</span>" +
+        '<span class="planned-expense-amount">' + currencyFormatter.format(exp.amount) + "</span>";
+      listEl.appendChild(li);
+    });
+
+    updateAltroMigrateButtonState();
+  }
+
+  function updateAltroMigrateButtonState() {
+    var anyChecked = document.querySelectorAll(".altro-migrate-check:checked").length > 0;
+    document.getElementById("altro-migrate-btn").disabled = !anyChecked;
+  }
+
   function renderWeeklyBreakdown() {
     var container = document.getElementById("weekly-breakdown-list");
     container.innerHTML = "";
+    var weeklyTarget = totalWeeklyTargetExclAffitto();
 
     weeksInCycle(currentCycleKey).forEach(function (w, idx) {
       var spent = spentInRangeExcluding("affitto", w.start, w.end);
       var startLabel = w.start.toLocaleDateString("it-IT", { day: "numeric", month: "short" });
       var endLabel = w.end.toLocaleDateString("it-IT", { day: "numeric", month: "short" });
+      var isOpen = expandedWeekIndex === idx;
 
-      var row = document.createElement("div");
-      row.className = "week-row";
-      row.innerHTML =
-        '<span class="week-row-label">Settimana ' + (idx + 1) +
-          '<span class="week-row-dates">' + startLabel + " – " + endLabel + "</span>" +
-        "</span>" +
-        '<span class="week-row-value">' + currencyFormatter.format(spent) + "</span>";
-      container.appendChild(row);
+      var item = document.createElement("div");
+      item.className = "week-item";
+
+      var detailHtml = "";
+      if (isOpen) {
+        var onTrack = spent <= weeklyTarget;
+        var weekExpenses = expensesInRangeExcluding("affitto", w.start, w.end);
+
+        var expensesHtml = "";
+        if (weekExpenses.length === 0) {
+          expensesHtml = '<p class="empty-state visible">Nessuna spesa in questa settimana.</p>';
+        } else {
+          expensesHtml = '<div class="week-expense-list">' +
+            weekExpenses.map(function (exp) {
+              var cat = categoryInfo(exp.category);
+              if (!cat) return "";
+              var sub = exp.subcategory ? subInfo(cat, exp.subcategory) : null;
+              var labelParts = [cat.label];
+              if (sub) labelParts.push(sub.label);
+              return '<div class="week-expense-row">' +
+                '<span class="week-expense-icon">' + cat.icon + "</span>" +
+                '<div class="week-expense-info">' +
+                  '<div class="week-expense-label">' + labelParts.join(" · ") + "</div>" +
+                  '<div class="week-expense-date">' + formatDate(exp.date) + (exp.note ? " · " + escapeHtml(exp.note) : "") + "</div>" +
+                "</div>" +
+                '<span class="week-expense-amount">' + currencyFormatter.format(exp.amount) + "</span>" +
+              "</div>";
+            }).join("") +
+          "</div>";
+        }
+
+        detailHtml =
+          '<div class="week-detail">' +
+            '<div class="week-detail-budget">' +
+              '<span>' + currencyFormatter.format(spent) + " di " + currencyFormatter.format(weeklyTarget) + " previsti</span>" +
+              '<span class="pace-pill ' + (onTrack ? "ontrack" : "behind") + '">' + (onTrack ? "In linea" : "Sopra il ritmo") + "</span>" +
+            "</div>" +
+            expensesHtml +
+          "</div>";
+      }
+
+      item.innerHTML =
+        '<button type="button" class="week-row' + (isOpen ? " open" : "") + '" data-index="' + idx + '">' +
+          '<span class="week-row-label">Settimana ' + (idx + 1) +
+            '<span class="week-row-dates">' + startLabel + " – " + endLabel + "</span>" +
+          "</span>" +
+          '<span class="week-row-value">' + currencyFormatter.format(spent) + "</span>" +
+          '<span class="week-row-caret">▾</span>' +
+        "</button>" +
+        detailHtml;
+
+      container.appendChild(item);
     });
   }
 
@@ -759,6 +924,7 @@
     renderForecast();
     renderPlannedExpenses();
     renderForecastBreakdown();
+    renderAltroMigrateList();
   }
 
   // ---------- Toast ----------
@@ -993,6 +1159,73 @@
     });
   }
 
+  function initAltroMigrate() {
+    document.getElementById("altro-migrate-list").addEventListener("change", function (e) {
+      if (!e.target.classList.contains("altro-migrate-check")) return;
+      updateAltroMigrateButtonState();
+    });
+
+    document.getElementById("altro-migrate-btn").addEventListener("click", function () {
+      var ids = Array.from(document.querySelectorAll(".altro-migrate-check:checked")).map(function (cb) {
+        return cb.getAttribute("data-id");
+      });
+      if (ids.length === 0) return;
+
+      expenses.forEach(function (exp) {
+        if (ids.indexOf(exp.id) !== -1) {
+          exp.category = "tempo_libero";
+          exp.subcategory = null;
+        }
+      });
+      saveExpenses(expenses);
+      showToast(ids.length === 1 ? "Spesa spostata" : "Spese spostate");
+      renderAll();
+    });
+  }
+
+  function initCategoryBudgetForms() {
+    var container = document.getElementById("budget-list");
+
+    container.addEventListener("click", function (e) {
+      var btn = e.target.closest(".category-budget-edit-btn");
+      if (!btn) return;
+      var card = btn.closest(".budget-card");
+      var form = card && card.querySelector(".category-budget-form");
+      if (!form) return;
+      form.classList.toggle("hidden");
+      if (!form.classList.contains("hidden")) {
+        var input = form.querySelector(".category-budget-input");
+        if (input) input.focus();
+      }
+    });
+
+    container.addEventListener("submit", function (e) {
+      var form = e.target.closest(".category-budget-form");
+      if (!form) return;
+      e.preventDefault();
+      var key = form.getAttribute("data-key");
+      var input = form.querySelector(".category-budget-input");
+      var value = parseFloat(input.value);
+      if (isNaN(value) || value < 0) return;
+      var rounded = Math.round(value * 100) / 100;
+      var cat = categoryInfo(key);
+      if (cat) cat.budget = rounded;
+      saveCategoryBudget(key, rounded);
+      showToast("Salvato");
+      renderAll();
+    });
+  }
+
+  function initWeeklyBreakdownToggle() {
+    document.getElementById("weekly-breakdown-list").addEventListener("click", function (e) {
+      var btn = e.target.closest(".week-row");
+      if (!btn) return;
+      var idx = parseInt(btn.getAttribute("data-index"), 10);
+      expandedWeekIndex = expandedWeekIndex === idx ? null : idx;
+      renderWeeklyBreakdown();
+    });
+  }
+
   function initNav() {
     var navButtons = document.querySelectorAll(".nav-btn");
     navButtons.forEach(function (btn) {
@@ -1017,6 +1250,9 @@
     initPlannedExpenseForm();
     initExpenseForm();
     initListDelete();
+    initWeeklyBreakdownToggle();
+    initCategoryBudgetForms();
+    initAltroMigrate();
     initNav();
     renderAll();
   });
