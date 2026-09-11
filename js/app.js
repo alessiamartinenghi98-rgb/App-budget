@@ -23,7 +23,7 @@
         { key: "cene", label: "Cene/Pranzi", icon: "🍝" }
       ]
     },
-    { key: "tempo_libero", label: "Tempo Libero", icon: "🎬", color: "yellow", budget: null, editableBudget: true },
+    { key: "tempo_libero", label: "Tempo Libero", icon: "🎬", color: "yellow", budget: 80, weekly: true, editableBudget: true },
     {
       key: "bellezza",
       label: "Bellezza",
@@ -795,12 +795,16 @@
       });
   }
 
-  function totalWeeklyTargetExclAffitto() {
+  function weeklyBudgetByCategory(w) {
     return CATEGORIES.filter(function (cat) {
       return cat.budget && cat.key !== "affitto";
-    }).reduce(function (sum, cat) {
-      return sum + cat.budget / WEEKS_PER_CYCLE;
-    }, 0);
+    }).map(function (cat) {
+      var spent = spentInRange(currentCycleKey, cat.key, w.start, w.end);
+      var target = cat.budget / WEEKS_PER_CYCLE;
+      return { cat: cat, spent: spent, target: target, diff: spent - target };
+    }).filter(function (row) {
+      return row.spent > 0;
+    });
   }
 
   function renderAltroMigrateList() {
@@ -847,7 +851,6 @@
   function renderWeeklyBreakdown() {
     var container = document.getElementById("weekly-breakdown-list");
     container.innerHTML = "";
-    var weeklyTarget = totalWeeklyTargetExclAffitto();
 
     weeksInCycle(currentCycleKey).forEach(function (w, idx) {
       var spent = spentInRangeExcluding("affitto", w.start, w.end);
@@ -860,7 +863,7 @@
 
       var detailHtml = "";
       if (isOpen) {
-        var onTrack = spent <= weeklyTarget;
+        var categoryRows = weeklyBudgetByCategory(w);
         var weekExpenses = expensesInRangeExcluding("affitto", w.start, w.end);
 
         var expensesHtml = "";
@@ -886,12 +889,27 @@
           "</div>";
         }
 
+        var categoryRowsHtml = "";
+        if (categoryRows.length > 0) {
+          categoryRowsHtml =
+            '<p class="budget-week-title">Budget settimanale per categoria</p>' +
+            '<div class="forecast-list">' +
+              categoryRows.map(function (row) {
+                return '<div class="forecast-row ' + (row.diff > 0 ? "over" : "under") + '">' +
+                  '<span class="forecast-row-icon">' + row.cat.icon + "</span>" +
+                  '<div class="forecast-row-info">' +
+                    '<div class="forecast-row-label">' + row.cat.label + "</div>" +
+                    '<div class="forecast-row-detail">' + currencyFormatter.format(row.spent) + " di " + currencyFormatter.format(row.target) + " a settimana</div>" +
+                  "</div>" +
+                  '<span class="forecast-row-diff">' + (row.diff > 0 ? "+" : "−") + currencyFormatter.format(Math.abs(row.diff)) + "</span>" +
+                "</div>";
+              }).join("") +
+            "</div>";
+        }
+
         detailHtml =
           '<div class="week-detail">' +
-            '<div class="week-detail-budget">' +
-              '<span>' + currencyFormatter.format(spent) + " di " + currencyFormatter.format(weeklyTarget) + " previsti</span>" +
-              '<span class="pace-pill ' + (onTrack ? "ontrack" : "behind") + '">' + (onTrack ? "In linea" : "Sopra il ritmo") + "</span>" +
-            "</div>" +
+            categoryRowsHtml +
             expensesHtml +
           "</div>";
       }
