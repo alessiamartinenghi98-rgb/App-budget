@@ -622,10 +622,17 @@
     return {
       weekSpent: weekSpent,
       weeklyTarget: weeklyTarget,
+      diff: weekSpent - weeklyTarget,
       onTrack: weekSpent <= weeklyTarget,
       weekStart: w.weekStart,
       weekEnd: w.weekEnd
     };
+  }
+
+  function pacePillText(diff) {
+    if (diff > 0) return "+" + currencyFormatter.format(diff) + " sopra";
+    if (diff < 0) return "−" + currencyFormatter.format(Math.abs(diff)) + " sotto";
+    return "In linea";
   }
 
   function renderBudget() {
@@ -696,7 +703,7 @@
             '<div class="budget-week-row">' +
               '<span class="budget-week-amounts">' + currencyFormatter.format(ws.weekSpent) + " di " + currencyFormatter.format(ws.weeklyTarget) + "</span>" +
               '<span class="pace-pill ' + (ws.onTrack ? "ontrack" : "behind") + '">' +
-                (ws.onTrack ? "In linea" : "Sopra il ritmo") +
+                pacePillText(ws.diff) +
               "</span>" +
             "</div>" +
           "</div>";
@@ -774,7 +781,7 @@
           '<span class="mini-row-value">' + currencyFormatter.format(ws.weekSpent) + " / " + currencyFormatter.format(ws.weeklyTarget) + "</span>" +
         "</div>" +
         '<span class="pace-pill mini-pace ' + (ws.onTrack ? "ontrack" : "behind") + '">' +
-          (ws.onTrack ? "In linea" : "Sopra il ritmo") +
+          pacePillText(ws.diff) +
         "</span>";
       container.appendChild(card);
     });
