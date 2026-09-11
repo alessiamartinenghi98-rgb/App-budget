@@ -579,7 +579,7 @@
     var weekStart = addDays(b.start, weekIndex * 7);
     var weekEndMax = addDays(weekStart, 6);
     var weekEnd = weekEndMax > b.end ? b.end : weekEndMax;
-    return { weekStart: weekStart, weekEnd: weekEnd };
+    return { weekStart: weekStart, weekEnd: weekEnd, weekNumber: weekIndex + 1 };
   }
 
   function spentInRange(cycleKey, catKey, start, end) {
@@ -619,13 +619,20 @@
     var w = weekInfoForToday(currentCycleKey);
     var weekSpent = spentInRange(currentCycleKey, cat.key, w.weekStart, w.weekEnd);
     var weeklyTarget = cat.budget / WEEKS_PER_CYCLE;
+    var cumulativeSpent = spentByCategory(currentCycleKey, cat.key);
+    var cumulativeTarget = weeklyTarget * w.weekNumber;
     return {
       weekSpent: weekSpent,
       weeklyTarget: weeklyTarget,
       diff: weekSpent - weeklyTarget,
       onTrack: weekSpent <= weeklyTarget,
       weekStart: w.weekStart,
-      weekEnd: w.weekEnd
+      weekEnd: w.weekEnd,
+      weekNumber: w.weekNumber,
+      cumulativeSpent: cumulativeSpent,
+      cumulativeTarget: cumulativeTarget,
+      cumulativeDiff: cumulativeSpent - cumulativeTarget,
+      cumulativeOnTrack: cumulativeSpent <= cumulativeTarget
     };
   }
 
@@ -706,6 +713,13 @@
                 pacePillText(ws.diff) +
               "</span>" +
             "</div>" +
+            '<p class="budget-week-title cumulative-title">Da inizio mese (settimana ' + ws.weekNumber + ")</p>" +
+            '<div class="budget-week-row">' +
+              '<span class="budget-week-amounts">' + currencyFormatter.format(ws.cumulativeSpent) + " di " + currencyFormatter.format(ws.cumulativeTarget) + "</span>" +
+              '<span class="pace-pill ' + (ws.cumulativeOnTrack ? "ontrack" : "behind") + '">' +
+                pacePillText(ws.cumulativeDiff) +
+              "</span>" +
+            "</div>" +
           "</div>";
       }
 
@@ -782,7 +796,13 @@
         "</div>" +
         '<span class="pace-pill mini-pace ' + (ws.onTrack ? "ontrack" : "behind") + '">' +
           pacePillText(ws.diff) +
-        "</span>";
+        "</span>" +
+        '<div class="mini-cumulative">' +
+          '<span class="mini-cumulative-label">Da inizio mese (sett. ' + ws.weekNumber + "): " + currencyFormatter.format(ws.cumulativeSpent) + " / " + currencyFormatter.format(ws.cumulativeTarget) + "</span>" +
+          '<span class="pace-pill mini-pace ' + (ws.cumulativeOnTrack ? "ontrack" : "behind") + '">' +
+            pacePillText(ws.cumulativeDiff) +
+          "</span>" +
+        "</div>";
       container.appendChild(card);
     });
   }
