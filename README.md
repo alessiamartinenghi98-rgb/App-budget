@@ -1,39 +1,57 @@
-# Le Mie Spese
+# FitTrack — Allenamento & Dieta
 
-App web per tenere traccia delle spese personali e dei budget mensili, con uno stile minimal in stile app di finanza personale, pensata per l'uso quotidiano da smartphone.
+PWA personale, offline-first, per monitorare allenamento, dieta, acqua e misure corporee. Nessun login, nessun backend: tutti i dati restano nel browser (`localStorage`).
 
-## Funzionalità
+## Stack
 
-- **Ciclo mensile dal 27**: ogni "mese" va dal 27 al 26 successivo (giorno dello stipendio), non dal 1°.
-- **Saldo iniziale persistente**: lo imposti una volta a inizio ciclo nella scheda Budget e resta salvato, modificabile in qualsiasi momento.
-- **Tre numeri sempre visibili in home**, in un'unica riga compatta: saldo attuale stimato (saldo iniziale − spese del ciclo), spese fatte finora nel mese e quanto hai risparmiato (saldo iniziale − spese − budget non ancora usato nelle altre categorie).
-- **Obiettivo di risparmio mensile di 600 €** (500 € viaggio + 100 € da accantonare), con barra di progresso, importo mancante e percentuale.
-- **10 categorie**, 9 con budget mensile: Bar e Cene/Pranzi (250 €, con sotto-voci Bar/Cene-Pranzi), Tempo Libero (80 €, cioè 20 €/settimana, per cinema e altre uscite — budget modificabile da te), Bellezza (100 €, con sotto-voci Trucchi/Vestiti/Skincare/Capelli), Affitto (390 €), Bollette (40 €), Spesa (130 €), Dentista (86 €), Benzina (250 €), Casa (30 €) — più **Altro**, senza budget, per tutto quello che non rientra nelle altre. Le spese già segnate come Altro si possono spostare in Tempo Libero, selezionandole nella scheda Budget.
-- **Barre di avanzamento pastello per categoria**, con importo, percentuale, quanto manca al budget e avviso quando ci si avvicina o si supera.
-- **Ritmo settimanale per Bar e Cene/Pranzi, Tempo Libero, Spesa e Benzina**: quanto speso questa settimana rispetto al budget settimanale (budget mensile ÷ 4), con di quanto sei sopra o sotto in euro. Include anche un confronto cumulativo da inizio mese (es. alla settimana 3: budget settimanale × 3 contro il totale speso finora in quella categoria), visibile sia in home che nella scheda Budget. Bollette e Bellezza restano solo mensili.
-- **Spese per settimana nella scheda Budget**: totale speso in ogni settimana del ciclo, sommando tutte le categorie tranne l'Affitto. Tocca una settimana per aprirla e vedere il budget settimanale diviso per categoria (per capire subito dove sei andata sopra), oltre all'elenco di tutte le spese fatte quella settimana.
-- **Forecast del mese in home**: imposti uno stipendio previsto (separato dal saldo iniziale reale) e delle "spese previste" occasionali non ancora fatte; l'app calcola quanto prevedi di risparmiare (o andare in negativo) a fine mese — stipendio meno il budget di ogni categoria (o la spesa reale se già superato) meno le spese previste — e lo confronta con l'obiettivo di 600 €. Mostra anche due elenchi che si aggiornano da soli: le categorie dove hai già speso più del budget e quelle dove sei ancora sotto.
-- **Elenco spese** con animazione leggera quando ne aggiungi una nuova; tocca una spesa per modificarne importo, categoria o data.
-- **Dati salvati in locale nel browser** (`localStorage`): spese e saldo iniziale non si perdono riaprendo l'app, nessun server o account richiesto.
+- React + Vite
+- Tailwind CSS
+- Recharts per i grafici
+- `vite-plugin-pwa` per manifest e service worker (installabile su iPhone)
 
-## Come usarla
-
-Basta aprire `index.html` in un browser, oppure servire la cartella con un server statico qualsiasi, ad esempio:
+## Sviluppo
 
 ```bash
-python3 -m http.server 8000
+npm install
+npm run dev
 ```
 
-e visitare `http://localhost:8000`. Per usarla dal telefono, apri lo stesso indirizzo sostituendo `localhost` con l'IP del computer sulla stessa rete Wi-Fi.
+Apri l'indirizzo mostrato dal terminale. Per usarla dal telefono sulla stessa rete Wi-Fi, avvia con `npm run dev -- --host` e apri `http://<ip-del-computer>:5173` da Safari.
 
-## Struttura del progetto
+## Build di produzione
+
+```bash
+npm run build
+npm run preview
+```
+
+## Installazione su iPhone
+
+1. Apri l'app da Safari (in locale sulla stessa rete, oppure dopo il deploy su un servizio come Vercel/Netlify).
+2. Tocca "Condividi" → "Aggiungi a Home".
+3. Da quel momento l'app funziona anche offline: allenamenti, dieta, acqua e misure sono salvati solo sul telefono.
+
+## Struttura
 
 ```
-index.html      pagina principale (Home, Spese, Budget)
-css/style.css   stile minimal dell'app
-js/app.js       logica dell'app (cicli mensili, budget, sotto-categorie, localStorage)
+src/
+  components/
+    tabs/            Riepilogo, Daily, Dieta, Allenamento
+    workout/          Log allenamento, progressione esercizi, gestione schede/programmi
+    Calendar.jsx       Calendario mensile con anelli stile Apple Watch
+    DayDetailModal.jsx Dettaglio di un giorno
+    BodyMeasurements.jsx Peso e misure in cm, con grafici
+    ActivityRing.jsx  Anello concentrico riutilizzabile
+  context/
+    AppDataContext.jsx Stato dell'app + persistenza in localStorage
+  lib/
+    date.js, stats.js, workout.js, defaultData.js, storage.js
 ```
 
-## Personalizzare categorie e budget
+Il modello dati collega ogni giorno (chiave `YYYY-MM-DD`) a dieta, acqua e sessione di allenamento, così Riepilogo e Daily leggono le stesse informazioni senza duplicazioni. Le schede di allenamento sono raggruppate in "programmi" (cicli di 6 settimane): i programmi precedenti restano consultabili, e la progressione di un esercizio viene calcolata cercandolo per nome in tutti i programmi/schede/sessioni salvati.
 
-Le categorie, le sotto-voci, i budget e l'obiettivo di risparmio sono definiti all'inizio di `js/app.js` (`CATEGORIES` e `SAVINGS_GOAL`): basta modificare quei valori per adattarli.
+## Personalizzare
+
+- Le schede di partenza (A/B/C/D) sono in `src/lib/defaultData.js`.
+- Le misure corporee tracciate (oltre al peso) si aggiungono/rimuovono direttamente dall'app, nel tab Daily → "misure tracciate".
+- Obiettivo acqua e obiettivo allenamenti settimanali si modificano dalle rispettive card in Riepilogo/Allenamento.
