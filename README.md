@@ -9,6 +9,10 @@ PWA personale, offline-first, per monitorare allenamento, dieta, acqua e misure 
 - Recharts per i grafici
 - `vite-plugin-pwa` per manifest e service worker (installabile su iPhone)
 
+## Deploy
+
+L'app è pubblicata su Vercel a partire da questo branch (`claude/pwa-workout-diet-tracker-w3x0z0`).
+
 ## Sviluppo
 
 ```bash
