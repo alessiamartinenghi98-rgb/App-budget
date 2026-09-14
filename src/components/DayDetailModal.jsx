@@ -6,7 +6,7 @@ const SGARRO_LABELS = { leggero: 'Leggero', medio: 'Medio', forte: 'Forte' }
 export default function DayDetailModal({ dateKey, onClose }) {
   const { data } = useAppData()
   const diet = data.diet[dateKey]
-  const session = data.workoutSessions.find((s) => s.date === dateKey)
+  const sessions = data.workoutSessions.filter((s) => s.date === dateKey)
   const waterMl = data.water[dateKey] || 0
 
   return (
@@ -36,30 +36,43 @@ export default function DayDetailModal({ dateKey, onClose }) {
           </div>
 
           <div className="bg-white rounded-2xl p-4 shadow-soft">
-            <p className="text-xs font-semibold text-coral-500 uppercase mb-1">Allenamento</p>
-            {!session && <p className="text-ink-400 text-sm">Nessun allenamento registrato.</p>}
-            {session && (
-              <div>
-                <p className="text-sm font-semibold text-ink-900 mb-2">{session.schedaNome}</p>
-                <ul className="space-y-2">
-                  {session.esercizi.map((ex, i) => (
-                    <li key={i} className="text-sm text-ink-700">
-                      <span className="font-medium">{ex.name}</span>
-                      <span className="text-ink-400">
-                        {' '}
-                        — {ex.sets.map((s, j) => (
-                          <span key={j}>
-                            {j > 0 && ', '}
-                            {ex.kgApplicable && s.kg ? `${s.kg}kg × ` : ''}
-                            {s.reps || '-'}
+            <p className="text-xs font-semibold text-coral-500 uppercase mb-1">
+              Allenamento{sessions.length > 1 ? ` (${sessions.length})` : ''}
+            </p>
+            {sessions.length === 0 && <p className="text-ink-400 text-sm">Nessun allenamento registrato.</p>}
+            {sessions.map((session, si) => (
+              <div key={session.id} className={si > 0 ? 'mt-3 pt-3 border-t border-base-100' : ''}>
+                {session.type === 'libero' ? (
+                  <div>
+                    <p className="text-sm font-semibold text-ink-900 mb-1">🏃 {session.nome}</p>
+                    <p className="text-sm text-ink-500">
+                      {[session.durataMin ? `${session.durataMin} min` : null, session.note].filter(Boolean).join(' · ') || 'Allenamento libero'}
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-sm font-semibold text-ink-900 mb-2">{session.schedaNome}</p>
+                    <ul className="space-y-2">
+                      {session.esercizi.map((ex, i) => (
+                        <li key={i} className="text-sm text-ink-700">
+                          <span className="font-medium">{ex.name}</span>
+                          <span className="text-ink-400">
+                            {' '}
+                            — {ex.sets.map((s, j) => (
+                              <span key={j}>
+                                {j > 0 && ', '}
+                                {ex.kgApplicable && s.kg ? `${s.kg}kg × ` : ''}
+                                {s.reps || '-'}
+                              </span>
+                            ))}
                           </span>
-                        ))}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
 
           <div className="bg-white rounded-2xl p-4 shadow-soft">

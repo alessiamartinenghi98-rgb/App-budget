@@ -10,6 +10,7 @@ export function exerciseHistory(workoutSessions, exerciseName) {
   const target = normalizeName(exerciseName)
   const entries = []
   for (const session of workoutSessions) {
+    if (!session.esercizi) continue // free-form ("libero") sessions have no exercises
     const ex = session.esercizi.find((e) => normalizeName(e.name) === target)
     if (ex) {
       entries.push({
@@ -46,6 +47,7 @@ export function formatLastTime(entry) {
 }
 
 export function sessionVolume(session) {
+  if (!session.esercizi) return null
   let total = 0
   let hasNumeric = false
   for (const ex of session.esercizi) {
