@@ -11,7 +11,7 @@ PWA personale, offline-first, per monitorare allenamento, dieta, acqua e misure 
 
 ## Deploy
 
-L'app è pubblicata su Vercel a partire da questo branch (`claude/pwa-workout-diet-tracker-w3x0z0`).
+L'app è pubblicata su Vercel a partire da questo branch (`claude/pwa-workout-diet-tracker-w3x0z0`), con il Vercel Toolbar disattivato.
 
 ## Sviluppo
 
